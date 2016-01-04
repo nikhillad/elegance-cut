@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
 
 /*
 |--------------------------------------------------------------------------
@@ -27,5 +25,20 @@ Route::get('/', function () {
 */
 
 Route::group(['middleware' => ['web']], function () {
-    //
+	
+	Route::get('/', ['as' => 'home', 'uses' => 'IndexController@index']);
+
+	Route::get('sign-up', ['as' => 'register', 'uses' => 'UserController@register']);
+
+	Route::get('cart', ['as' => 'cart', 'uses' => 'UserController@cart']);
+
+	Route::get('my-account', ['as' => 'account', 'uses' => 'UserController@account']);
+
+	Route::get('my-orders', ['as' => 'orders', 'uses' => 'UserController@orders']);
+
+	Route::match(['get', 'post'], 'about-us', ['as' => 'about_us', 'uses' => 'IndexController@about_us']);
+
+	Route::get('login', ['as' => 'login', 'uses' => 'UserController@login']);
+
+    Route::match(['get', 'post'], 'about-us', ['as' => 'about_us', 'uses' => 'IndexController@about_us']);
 });
