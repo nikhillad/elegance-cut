@@ -25,10 +25,10 @@
 */
 
 Route::group(['middleware' => ['web']], function () {
-	
+
 	Route::get('/', ['as' => 'home', 'uses' => 'IndexController@index']);
 
-	Route::get('sign-up', ['as' => 'register', 'uses' => 'UserController@register']);
+	Route::match(['get', 'post'], 'sign-up', ['as' => 'register', 'uses' => 'UserController@register']);
 
 	Route::get('cart', ['as' => 'cart', 'uses' => 'UserController@cart']);
 
@@ -38,7 +38,9 @@ Route::group(['middleware' => ['web']], function () {
 
 	Route::match(['get', 'post'], 'about-us', ['as' => 'about_us', 'uses' => 'IndexController@about_us']);
 
-	Route::get('login', ['as' => 'login', 'uses' => 'UserController@login']);
+	Route::match(['get', 'post'], 'login', ['as' => 'login', 'uses' => 'UserController@login']);
+
+	Route::get('logout', ['as' => 'logout', 'uses' => 'UserController@logout']);
 
     Route::match(['get', 'post'], 'about-us', ['as' => 'about_us', 'uses' => 'IndexController@about_us']);
 });
