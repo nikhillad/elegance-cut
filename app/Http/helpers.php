@@ -11,26 +11,27 @@ function getKeyValueArray($key,$value,$input_array)
 	return $output_array;
 }
 
-function login($user_name,$user_id,$user_email,$remember_me = false)
+function login($objUser,$remember_me = false)
 {
 	//session_start();
 	
-	$_SESSION['elegance_cut_user']['user_name'] = $user_name;
-	$_SESSION['elegance_cut_user']['user_id'] = $user_id;
-	$_SESSION['elegance_cut_user']['user_email'] = $user_email;
+	$_SESSION['elegance_cut_user']['obj'] = $objUser;
 
 	$cookie_name = 'elegance_cut_user';
-	$cookie_value = $user_name;
+
+	if($remember_me)
+		$cookie_value = $objUser->fname.'-'.$objUser->user_id.'-'.$objUser->email.'-remember';
+	else
+		$cookie_value = $objUser->fname.'-'.$objUser->user_id.'-'.$objUser->email;
 
 	if($remember_me)
 	{
-		setcookie('elegance_cut_user', $user_id, time() + (86400 * 30), "/"); // 86400 = 1 day
-		setcookie('elegance_cut_user_email', $user_email, time() + (86400 * 30), "/"); // 86400 = 1 day
-		$_SESSION['elegance_cut_user']['session_expire'] = time() + 604800;
+		setcookie($cookie_name, encryptCookie($cookie_value), time() + (86400 * 3650), "/"); // 86400 = 1 day, 10 Years
+		$_SESSION['elegance_cut_user']['session_expire'] = time() + 86400; // 1 day
 	}
 	else{
-		setcookie('elegance_cut_user', $user_id, time() + (86400), "/"); // 86400 = 1 day
-		setcookie('elegance_cut_user_email', $user_email, time() + (86400), "/"); // 86400 = 1 day
+		setcookie($cookie_name, encryptCookie($cookie_value), time() + (3600), "/"); // 3600 = 1 hour
+		$_SESSION['elegance_cut_user']['session_expire'] = time() + 3600; // 1 hour
 	}
 }
 
@@ -38,31 +39,109 @@ function logout()
 {
 	unset($_SESSION['elegance_cut_user']);
 
-	setcookie('elegance_cut_user', '', time() - (86400 * 30), "/"); // 86400 = 1 day
-	setcookie('elegance_cut_user_email','', time() - (86400 * 30), "/"); // 86400 = 1 day	
+	setcookie('elegance_cut_user', '', time() - (86400 * 30), "/"); // 86400 = 1 day	
 }
 
 function validate_session()
 {
 	$user = new stdClass();
 
-	if(!isset($_SESSION['elegance_cut_user']['user_name']) || !isset($_SESSION['elegance_cut_user']['user_id']) || !isset($_SESSION['elegance_cut_user']['user_email']))
+	//check if all the session variable are in place
+	if(isset($_SESSION['elegance_cut_user']) && isset($_SESSION['elegance_cut_user']['obj']))
 	{
-		$user->is_logged_in = false;
-		return $user;
-	}
+		if($_SESSION['elegance_cut_user']['session_expire'] > time())
+		{
+			$user = $_SESSION['elegance_cut_user']['obj'];
+			$user->is_logged_in = true;
+			return $user;
+		}
+		else if(isset($_COOKIE['elegance_cut_user']))
+		{
+			$arrayCookieVariables = getCookieVariables(decryptCookie($_COOKIE['elegance_cut_user']));
 
-	$objUser = App\UserMaster::find($_SESSION['elegance_cut_user']['user_id'])->first();
-
-	if($objUser == NULL || $objUser->fname != $_SESSION['elegance_cut_user']['user_name'] || $objUser->email != $_SESSION['elegance_cut_user']['user_email'])	
-	{
-		logout();
-		$user->is_logged_in = false;
-		return $user;
+			if(in_array('remember', $arrayCookieVariables))
+			{
+				//restore session expire
+				$_SESSION['elegance_cut_user']['session_expire'] = time() + 86400;
+				$user = $_SESSION['elegance_cut_user']['obj'];
+				$user->is_logged_in = true;
+				return $user;
+			}
+			else
+			{
+				$_SESSION['elegance_cut_user']['session_expire'] = time() + 3600;
+				$user = $_SESSION['elegance_cut_user']['obj'];
+				$user->is_logged_in = true;
+				return $user;
+			}
+		}
+		else
+		{
+			logout();
+			$user->is_logged_in = false;
+			return $user;
+		}
 	}
 	else
 	{
-		$objUser->is_logged_in = true;
-		return $objUser;
+		if(isset($_COOKIE['elegance_cut_user']))
+		{
+			$arrayCookieVariables = getCookieVariables(decryptCookie($_COOKIE['elegance_cut_user']));
+
+			//get user data
+			$objUser = App\UserMaster::find($arrayCookieVariables[1])->first();
+
+			if(in_array('remember', $arrayCookieVariables))
+			{
+				//restore session expire
+				$_SESSION['elegance_cut_user']['obj'] = $objUser;
+				$_SESSION['elegance_cut_user']['session_expire'] = time() + 86400; // 1 day
+
+				$user = $_SESSION['elegance_cut_user']['obj'];
+				$user->is_logged_in = true;
+				return $user;
+			}
+			else
+			{
+				//restore session expire
+				$_SESSION['elegance_cut_user']['obj'] = $objUser;
+				$_SESSION['elegance_cut_user']['session_expire'] = time() + 3600; // 1 hour
+
+				$user = $_SESSION['elegance_cut_user']['obj'];
+				$user->is_logged_in = true;
+				return $user;
+			}
+		}
+		else
+		{
+			logout();
+			$user->is_logged_in = false;
+			return $user;
+		}
 	}
+}
+
+function encryptCookie($value){
+   if(!$value){return false;}
+   $key = env('APP_KEY');
+   $text = $value;
+   $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+   $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+   $crypttext = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $text, MCRYPT_MODE_ECB, $iv);
+   return trim(base64_encode($crypttext)); //encode for cookie
+}
+
+function decryptCookie($value){
+   if(!$value){return false;}
+   $key = env('APP_KEY');
+   $crypttext = base64_decode($value); //decode cookie
+   $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+   $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+   $decrypttext = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $crypttext, MCRYPT_MODE_ECB, $iv);
+   return trim($decrypttext);
+}
+
+function getCookieVariables($cookie)
+{
+	return explode('-', $cookie);
 }

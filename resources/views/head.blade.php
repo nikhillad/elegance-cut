@@ -63,6 +63,9 @@
         text-align: center;
         margin-bottom: 10px;
       }
+       .generic-page-header-left{
+       
+      }
       .generic-page-header-hr{
         color: #e7214c;
         margin: 0 auto;

@@ -29,24 +29,38 @@ class UserController extends Controller
 	 */    
 	public function login(Request $request)
 	{
-    	$form['email'] 			= $request->input('email','');
-    	$form['password'] 		= $request->input('password','');
-    	$form['remember_me'] 	= $request->input('remember_me','');
+		if($this->user_session->is_logged_in)
+			return redirect()->route('home');
 
-    	$objUser = App\UserMaster::where('email',$form['email'])->first();
+		if ($request->isMethod('post')) {
+		 
+			if(!$request->has('email') || !$request->has('password'))
+	    	{
+	    		$message = 'Invalid username or password.';
+	    		return view('user.login',['message'=>$message]);
+	    	}
 
-    	if($objUser == NULL || (md5($form['password']) !== $objUser->password))
-    	{
-    		$message = 'Invalid username or password.';
-    		return view('user.login',['message'=>$message,'email'=>$form['email']]);
-    	}
+	    	$form['email'] 			= $request->input('email','');
+	    	$form['password'] 		= $request->input('password','');
+	    	$form['remember_me'] 	= $request->input('remember_me','');
+	    		
+	    	$objUser = App\UserMaster::where('email',$form['email'])->first();
 
-    	if($form['remember_me'] == 'selected')
-    		login($objUser->fname,$objUser->user_id,$objUser->email,true);
-    	else
-    		login($objUser->fname,$objUser->user_id,$objUser->email);
+	    	if($objUser == NULL || (md5($form['password']) !== $objUser->password))
+	    	{
+	    		$message = 'Invalid username or password.';
+	    		return view('user.login',['message'=>$message,'email'=>$form['email']]);
+	    	}
 
-		return view('home');
+	    	if($form['remember_me'] == 'selected')
+	    		login($objUser,true);
+	    	else
+	    		login($objUser);
+
+			return redirect()->route('home');
+		}
+
+		return view('user.login');
 	}	
 
 	/**
@@ -67,6 +81,9 @@ class UserController extends Controller
 	 */    
 	public function register(Request $request)
 	{
+		if($this->user_session->is_logged_in)
+			return redirect()->route('home');
+
 		$arrStates = DB::connection('mongodb')->collection('states')->get();
 		$arrCountries = DB::connection('mongodb')->collection('countries')->get();
 		
@@ -178,4 +195,28 @@ class UserController extends Controller
 
     	return view('user.register',['message'=>$message,'form'=>$form,'arrStates'=>$arrStates,'arrCountries'=>$arrCountries]);
 	}
+
+	/**
+	 * Orders function. Shows orders list
+	 *
+	 * @return view
+	 */  
+	public function orders(Request $request)
+	{
+		if(!$this->user_session->is_logged_in)
+			return redirect()->route('login');
+
+		return view('orders');
+	}
+
+	 /**
+	 * Cart function. Shows user shopping cart
+	 *
+	 * @return view
+	 */
+
+    public function cart()
+    {	
+    	return view('user.cart');
+    }
 }

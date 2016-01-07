@@ -31,9 +31,9 @@
           <ul class="nav nav-pills top-header-menu hidden-xs">
             <li class="top-header-menu-li"><a href="{{route('orders')}}"><i style="font-size:18px" class="icon-left fa fa-map-marker"></i><span>Track Order</span></a></li>
             
-            @if (isset($_SESSION['elegance_cut_user']['user_name']))
+            @if (isset($_SESSION['elegance_cut_user']['obj']))
             <li class="dropdown top-header-menu-li">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome, <strong>{!! $_SESSION['elegance_cut_user']['user_name'] !!}</strong>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-angle-down toggler hidden-xs"></i></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome, <strong>{!! $_SESSION['elegance_cut_user']['obj']->fname !!}</strong>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-angle-down toggler hidden-xs"></i></a>
 
               <!-- Dropdown Panel -->
               <ul class="dropdown-menu">
@@ -45,7 +45,7 @@
              @endif 
           </ul>
 
-        <div class="clearfix"></div>
+          <div class="clearfix"></div>
           <!-- Header Cols -->
           <div class="header-cols"> 
           
@@ -68,6 +68,7 @@
             </div>
             <!-- /Brand Col -->
 
+            @if (!isset($_SESSION['elegance_cut_user']['obj']))
             <!-- Right Col -->
             <div class="right-col">
             
@@ -135,7 +136,8 @@
               
             </div>
             <!-- /Right Col -->
-            
+            @endif
+
             <!-- Left Col -->
             <div class="left-col">
             
@@ -302,7 +304,6 @@
               <div class="navbar-btn-group btn-group navbar-right no-margin-r-xs">
               
                
-
                 <!-- Btn Wrapper -->
                 <div class="btn-wrapper dropdown">
                 
