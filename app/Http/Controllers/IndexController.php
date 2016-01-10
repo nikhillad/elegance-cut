@@ -11,7 +11,7 @@ use Config;
 use App;
 
 class IndexController extends Controller
-{	
+{
 	/*
 	|--------------------------------------------------------------------------
 	| Index Controller

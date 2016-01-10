@@ -145,3 +145,49 @@ function getCookieVariables($cookie)
 {
 	return explode('-', $cookie);
 }
+
+function generate_and_send_email_verification_email($objUser = null)
+{
+	if($objUser == null)
+		return false;
+
+	//generate token
+	$token = generate_token($objUser,config('global.token_types.verify_email'));
+
+	$token_generated = false;
+
+	//store token into database
+	$objTokenMaster = new App\TokenMaster();
+
+	$objTokenMaster->token = $token;
+	$objTokenMaster->expire_on = date("Y-m-d H:i:s", strtotime('+1 hour'));
+	$objTokenMaster->user_id = $objUser->user_id;
+	$objTokenMaster->token_type = config('global.token_types.verify_email');
+
+	try{
+		$objTokenMaster->save();
+		$token_generated = true;
+	}
+	catch(\Exception $e)
+	{
+		return false;
+		$token_generated = false;
+	}
+	
+	//send email with this token
+	if($token_generated == true)
+	{
+		//send mail
+
+	}
+	else
+	{
+		return false;
+	}
+
+}
+
+function generate_token($objUser,$token_type)
+{
+	return encryptCookie($objUser->user_id.$token_type.time()); 
+}

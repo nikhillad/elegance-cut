@@ -43,4 +43,10 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('logout', ['as' => 'logout', 'uses' => 'UserController@logout']);
 
     Route::match(['get', 'post'], 'about-us', ['as' => 'about_us', 'uses' => 'IndexController@about_us']);
+
+    Route::match(['get', 'post'], '/my-account/deactivate', ['as' => 'deactivate_account', 'uses' => 'UserController@deactivate_account']);
+
+    Route::match(['get', 'post'], '/my-account/edit', ['as' => 'edit_account', 'uses' => 'UserController@edit_account']);
+
+    Route::get('verify/{token_type}', ['as' => 'generate_verify_link', 'uses' => 'UserController@generate_verify_link']);
 });

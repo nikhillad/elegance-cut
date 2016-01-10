@@ -15,8 +15,8 @@ class Controller extends BaseController
 	 function __construct() {
 
 	 	 session_start();
-
-	 	 $this->user_session = validate_session();
 	 	 
+	 	 $this->user_session = validate_session();
+
 	 }	
 }

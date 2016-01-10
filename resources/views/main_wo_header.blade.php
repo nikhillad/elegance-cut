@@ -70,6 +70,145 @@
               <a class="navbar-brand visible-xs" href="#"><img src="images/ec_xs-100x70.png" alt="Elegance Cut"></a>
             </div>
             <!-- /Header-->
+          
+            <!-- Collapse -->
+            <div class="collapse navbar-collapse navbar-absolute">
+            
+              <!-- Navbar Center -->
+              <ul class="nav navbar-nav navbar-center line-top line-pcolor case-c">
+                <li class="active"><a href="{{route('home')}}">home</a></li>
+                <li class="dropdown dropdown-mega"><a href="#" class="dropdown-toggle" data-toggle="dropdown">women<i class="fa fa-angle-down toggler"></i></a>
+                  <!-- Mega Menu -->
+                  <div class="mega-menu dropdown-menu">
+                    <!-- Row -->
+                    <div class="row">
+                    
+                      <!-- col -->
+                      <div class="col-md-3">
+                        <img class="featured-img hidden-xs hidden-sm" src="images/menu-pic.jpg" alt="">
+                      </div>
+                      <!-- /col -->
+                      
+                      <!-- col -->
+                      <div class="col-md-3">
+                        <!-- <h5>shop pages</h5> -->
+                        <ul class="links">
+                          <li><a href="category.html">TOPS, TEES</a></li>
+                          <li><a href="category2.html">CARDIGAN</a></li>
+                          <li><a href="product.html">V-NECK SWEATER</a></li>
+                          
+                        </ul>
+                      </div>
+                      <!-- /col -->
+                      
+                      <!-- col -->
+                      <div class="col-md-3">
+                        <!-- <h5>common pages</h5> -->
+                        <ul class="links">
+                          <li><a href="cart.html">TURTLE NECK SWEATER</a></li>
+                          <li><a href="checkout.html">SHRUGS</a></li>
+                          <li><a href="error-generic.html">TANK TOPS</a></li>
+                        </ul>
+                      </div>
+                      <!-- /col -->
+                      
+                      <!-- col -->
+                      <div class="col-md-3">
+                        <!-- <h5>other pages</h5> -->
+                        <ul class="links">
+                          <li><a href="contact.html">YOGA WEAR</a></li>
+                        </ul>
+                      </div>
+                      <!-- /col -->
+                    </div>
+                    <!-- /Row -->
+                  </div>
+                  <!-- /Mega Menu -->
+                </li>
+                <li class="dropdown dropdown-mega"><a href="#" class="dropdown-toggle" data-toggle="dropdown">men<i class="fa fa-angle-down toggler"></i></a>
+                  <!-- Mega Menu -->
+                  <div class="mega-menu dropdown-menu">
+                    <!-- Row -->
+                    <div class="row">
+                    
+                      <!-- col -->
+                      <div class="col-md-3">
+                        <img class="featured-img hidden-xs hidden-sm" src="images/menu-pic-men.jpg" alt="">
+                      </div>
+                      <!-- /col -->
+                      
+                      <!-- col -->
+                      <div class="col-md-3">
+                        <!-- <h5>shop pages</h5> -->
+                        <ul class="links">
+                          <li><a href="category.html">ROUND NECK T-SHIRT</a></li>
+                          <li><a href="category2.html">V-NECK T-SHIRT</a></li>
+                          <li><a href="product.html">SLEEVELESS T-SHIRT</a></li>
+                          
+                        </ul>
+                      </div>
+                      <!-- /col -->
+                      
+                      <!-- col -->
+                      <div class="col-md-3">
+                        <!-- <h5>common pages</h5> -->
+                        <ul class="links">
+                          <li><a href="cart.html">STINGER</a></li>
+                          <li><a href="checkout.html">CARDIGAN</a></li>
+                          <li><a href="error-generic.html">V-NECK SWEATER</a></li>
+                        </ul>
+                      </div>
+                      <!-- /col -->
+                      
+                      <!-- col -->
+                      <div class="col-md-3">
+                        <!-- <h5>other pages</h5> -->
+                        <ul class="links">
+                          <li><a href="contact.html">TURTLE NECK SWEATER</a></li>
+                          <li><a href="contact.html">HIGH NECK SWEATER</a></li>
+                        </ul>
+                      </div>
+                      <!-- /col -->
+                    </div>
+                    <!-- /Row -->
+                  </div>
+                  <!-- /Mega Menu -->
+                </li>
+               
+                
+              </ul>
+              <!-- /Navbar Center -->
+              
+            </div>
+            <!-- /Collapse -->
+            
+            <!-- Dont Collapse -->
+            <div class="navbar-dont-collapse">
+
+              <!-- Navbar btn-group -->
+              <div class="navbar-btn-group btn-group navbar-right no-margin-r-xs">
+              
+               
+                <!-- Btn Wrapper -->
+                <div class="btn-wrapper dropdown">
+                
+                <!--   <a aria-expanded="false" class="btn btn-outline"><b class="count count-scolor count-round">2</b><i class="fa fa-shopping-cart" style="font-size:28px"></i> My Cart</a> -->
+                  <a href="{{route('cart')}}">
+                  <button class="btn blue-button"><b class="count count-scolor count-round">2</b><i class="fa fa-shopping-cart" style="font-size:23px"></i><span class="cart-button-title hidden-xs">My Cart</span></button>
+                  </a>
+
+
+                </div>
+                <!-- /Btn Wrapper -->
+
+              </div>
+              <!-- /Navbar btn-group -->
+              
+              <!-- Navbar Left -->
+             
+            </div>
+            <!-- /Dont Collapse -->
+
           </div>
 
         </nav>
@@ -96,8 +235,12 @@
             <!-- hlinks -->
             <ul class="hlinks pull-right">
               <li><a href="{{route('about_us')}}">About</a></li>
-              <li><a href="{{route('login')}}">Login</a></li>
-              <li><a href="{{route('register')}}">Sign Up</a></li>
+              @if (isset($_SESSION['elegance_cut_user']['obj']))
+                <li><a href="{{route('logout')}}">Logout</a></li>
+              @else
+                <li><a href="{{route('login')}}">Login</a></li>
+                <li><a href="{{route('register')}}">Sign Up</a></li>
+              @endif    
               <li><a href="#">Support</a></li>
             </ul>
             <!-- /hlinks -->

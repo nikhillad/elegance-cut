@@ -6,12 +6,14 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'AddTokenTypeTokenMaster' => $baseDir . '/database/migrations/2016_01_10_192506_add_token_type_token_master.php',
     'CreateCategoryMasterTable' => $baseDir . '/database/migrations/2016_01_06_175807_create_category_master_table.php',
     'CreateItemImageMasterForeignKey' => $baseDir . '/database/migrations/2016_01_06_183753_create_item_image_master_foreign_key.php',
     'CreateItemImageMasterTable' => $baseDir . '/database/migrations/2016_01_06_180529_create_item_image__master_table.php',
     'CreateItemMasterForeignKey' => $baseDir . '/database/migrations/2016_01_06_183348_create_item_master_foreign_key.php',
     'CreateItemMasterTable' => $baseDir . '/database/migrations/2016_01_06_175145_create_item_master_table.php',
     'CreatePasswordResetsTable' => $baseDir . '/database/migrations/2014_10_12_100000_create_password_resets_table.php',
+    'CreateTokenMasterTable' => $baseDir . '/database/migrations/2016_01_10_185616_create-token-master-table.php',
     'CreateTypeMasterForeignKey' => $baseDir . '/database/migrations/2016_01_06_183620_create_type_master_foreign_key.php',
     'CreateTypeMasterTable' => $baseDir . '/database/migrations/2016_01_06_175600_create_type_master_table.php',
     'CreateUsersTable' => $baseDir . '/database/migrations/2014_10_12_000000_create_users_table.php',
@@ -521,4 +523,5 @@ return array(
     'SebastianBergmann\\Version' => $vendorDir . '/sebastian/version/src/Version.php',
     'TestCase' => $baseDir . '/tests/TestCase.php',
     'Text_Template' => $vendorDir . '/phpunit/php-text-template/src/Template.php',
+    'UpdateUserMasterTableAddEmailVerified' => $baseDir . '/database/migrations/2016_01_10_183256_update-user-master-table-add-email-verified.php',
 );

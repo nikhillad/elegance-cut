@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Input;
+use Illuminate\Support\Facades\Input;
 use Config;
 use App;
 use DB;
@@ -86,13 +86,12 @@ class UserController extends Controller
 
 		$arrStates = DB::connection('mongodb')->collection('states')->get();
 		$arrCountries = DB::connection('mongodb')->collection('countries')->get();
-		
+	
 		$arrStates_code_state = getKeyValueArray('code','state',$arrStates);
 		$arrCountries_code_country = getKeyValueArray('code','country',$arrCountries);
 
 		$form['fname'] 			= $request->input('fname','');
 		$form['lname'] 			= $request->input('lname','');
-    	$form['email'] 			= $request->input('email','');
     	$form['password'] 		= $request->input('password','');
     	$form['cnf_password'] 	= $request->input('cnf_password','');
     	$form['email'] 			= $request->input('email','');
@@ -121,7 +120,7 @@ class UserController extends Controller
 		    	{
 		    		$message[] = '-Password didn\'t match. Plese type exact password in \'Confirm Password\' field.';
 		    	}	
-		    	if(count($form['mobile']) > 10)	
+		    	if(strlen($form['mobile']) > 10 || strlen($form['mobile']) < 10)	
 			    {
 			    	$message[] = '-Please enter only 10 digit mobile number.';		
 			    }
@@ -164,7 +163,10 @@ class UserController extends Controller
 			    	if(isset($res) && $res == true && empty($message))
 			    	{
 			    		//call login method to set the session, cookie etc.
-			    		login($form['fname'], $LastInsertId, $form['email']);
+			    		login($objUserMaster);
+
+			    		//send user an email verification link
+			    		generate_and_send_email_verification_email($objUserMaster);
 
 			    		return redirect()->route('home');
 			    	}
@@ -197,6 +199,193 @@ class UserController extends Controller
 	}
 
 	/**
+	 * My account function. Shows user account
+	 *
+	 * @return view
+	 */  
+	public function account(Request $request)
+	{
+		if(!$this->user_session->is_logged_in)
+			return redirect()->route('login');
+
+		$objUserMaster = $this->user_session;
+
+		if($objUserMaster == null)
+			return redirect()->route('login');
+
+		return view('user.account',['objUserMaster'=>$objUserMaster]);
+	}
+
+	/**
+	 * Edit account
+	 *
+	 * @return view
+	 */  
+	public function edit_account(Request $request)
+	{
+		if(!$this->user_session->is_logged_in)
+			return redirect()->route('login');
+
+		$objUserMaster = $this->user_session;
+
+		if($objUserMaster == null)
+			return redirect()->route('login');
+
+		$arrStates = DB::connection('mongodb')->collection('states')->get();
+		$arrCountries = DB::connection('mongodb')->collection('countries')->get();
+	
+		$arrStates_code_state = getKeyValueArray('code','state',$arrStates);
+		$arrCountries_code_country = getKeyValueArray('code','country',$arrCountries);
+
+		$form['fname'] = $objUserMaster->fname;
+		$form['lname'] = $objUserMaster->lname;
+		$form['email'] = $objUserMaster->email;
+		$form['mobile'] = $objUserMaster->mobile;
+		$form['zip'] = $objUserMaster->zip_code;
+		$form['address'] = $objUserMaster->address;
+		$form['city'] = $objUserMaster->city;
+		$form['state'] = $objUserMaster->state;
+		$form['country'] = $objUserMaster->country;
+		
+		
+		$message = '';
+		$current_email = $form['email'];
+		$current_mobile = $form['mobile'];
+		$email_verification_require = false;
+		$mobile_verification_require = false;
+
+    	if ($request->isMethod('post')) 
+    	{
+    		$form['fname'] 			= $request->input('fname','');
+			$form['lname'] 			= $request->input('lname','');
+	    	$form['email'] 			= $request->input('email','');
+	    	$form['mobile'] 		= $request->input('mobile','');
+	    	$form['zip'] 			= $request->input('zip','');
+	    	$form['address'] 		= $request->input('address','');
+	    	$form['city'] 			= $request->input('city','');
+	    	$form['state'] 			= $request->input('state','');
+	    	$form['country'] 		= $request->input('country','');
+
+	    	if($form['fname'] != '' && $form['lname'] != '' && $form['email'] != '' && $form['email'] != '' && $form['mobile'] != '' && $form['zip'] != ''
+	    		&& $form['address'] != '' && $form['city'] != ''
+	    		)
+	    	{
+	    		if (!filter_var($form['email'], FILTER_VALIDATE_EMAIL))
+	    		{
+	    			$message[] = '-Please enter a valid email address.';
+	    		}	
+		    	if(strlen($form['mobile']) > 10 || strlen($form['mobile']) < 10)	
+			    {
+			    	$message[] = '-Please enter only 10 digit mobile number.';		
+			    }
+			    if($form['state'] == 'select' || $form['country'] == 'select' || !array_key_exists($form['state'], $arrStates_code_state)
+    			||  !array_key_exists($form['country'], $arrCountries_code_country))
+    			{
+    				$message[] = '-Please select your state and country.';
+    			}
+			    
+			    if(empty($message))
+			    {
+			    	try{
+				    	//save user in database
+
+			    		unset($objUserMaster->is_logged_in);
+
+				    	$objUserMaster->fname 	 = $form['fname'];
+				    	$objUserMaster->lname 	 = $form['lname'];
+				    	$objUserMaster->email 	 = $form['email'];
+				    	$objUserMaster->mobile 	 = $form['mobile'];
+				    	$objUserMaster->zip_code = $form['zip'];
+				    	$objUserMaster->state 	 = $form['state'];
+				    	$objUserMaster->country  = $form['country'];
+				    	$objUserMaster->city 	 = $form['city'];
+				    	$objUserMaster->address  = $form['address'];
+
+				    	//check if email has been changed
+				    	if($current_email != $objUserMaster->email)
+				    	{
+				    		$email_verification_require = true;
+				    		$objUserMaster->email_verified  = false;
+				    	}	
+
+				    	//check if mobile has been changed
+				    	if($current_mobile != $objUserMaster->mobile)
+				    	{
+				    		$mobile_verification_require = true;
+				    		$objUserMaster->mobile_verified  = false;
+				    	}
+
+			    		$res = $objUserMaster->save();
+
+			    		$objUserMaster->is_logged_in = true;
+
+			    		//change session details
+			    		$_SESSION['elegance_cut_user']['obj'] = $objUserMaster;
+			    		$this->user_session = $objUserMaster;
+
+			    	}
+			    	catch(\Exception $e)
+			    	{
+			    		$message[] = 'Looks like something went wrong. Please try again or contact our support team at '.config('global.support_email');
+			    	}
+
+			    	if(isset($res) && $res == true && empty($message))
+			    	{
+			    		//generate and send verification email if email has been changed
+			    		if($email_verification_require)
+			    			generate_and_send_email_verification_email($objUserMaster);	
+
+			    		$_SESSION['message'] = 'Account details saved successfully.';
+			    		return redirect()->route('account');
+			    	}
+			    	else if(empty($message))
+			    	{
+			    		$message[] = 'Something went wrong. Please try again.';
+			    	}
+			    }		
+			    			
+	    	}
+	    	else
+	    	{
+	    		$message[] = '-Please fill in all the fields.';
+	    	}
+    	}
+    	
+    	if(is_array($message))
+    	{
+    		$temp = '';
+
+    		foreach($message as $value)
+    		{
+    			$temp = $temp.$value.'<br>';
+    		}
+
+    		$message = $temp;
+    	}
+
+
+		return view('user.edit_account',['message'=>$message,'objUserMaster'=>$objUserMaster,'form'=>$form,'arrStates'=>$arrStates,'arrCountries'=>$arrCountries]);
+	}
+
+	/**
+	 * Deactivate account
+	 *
+	 * @return view
+	 */  
+	public function deactivate_account(Request $request)
+	{
+		if(!$this->user_session->is_logged_in)
+			return redirect()->route('login');
+
+		$objUserMaster = $this->user_session;
+
+		if($objUserMaster == null)
+			return redirect()->route('login');
+
+		return view('user.account',['objUserMaster'=>$objUserMaster]);
+	}
+
+	/**
 	 * Orders function. Shows orders list
 	 *
 	 * @return view
@@ -219,4 +408,45 @@ class UserController extends Controller
     {	
     	return view('user.cart');
     }
+
+    /**
+	 * Generate verification link and send
+	 *
+	 * @return view
+	 */  
+	public function generate_verify_link(Request $request,$token_type='')
+	{
+		if(!$this->user_session->is_logged_in)
+			return redirect()->route('login');
+
+		$objUserMaster = $this->user_session;
+
+		if($objUserMaster == null)
+			return redirect()->route('login');
+
+
+		if(in_array($token_type,config('global.token_types')))
+		{
+			$objTokenMaster = App\TokenMaster::where('user_id',$objUserMaster->user_id)
+				->where('expire_on','>',date('Y-m-d H:i:s',time()))
+				->where('status',1)->first();	
+			
+			if($objTokenMaster != null)
+			{
+				$_SESSION['message'] = 'We already have sent you an email verification link. Plase check your inbox.';
+				return redirect()->route('account');
+			}
+
+			//generate link and send
+			generate_and_send_email_verification_email($objUserMaster);
+
+			$_SESSION['message'] = 'Verification email has been sent successfully.';
+		}
+		else
+		{
+			$_SESSION['message'] = 'Invalid token type. Please try again.';
+		}
+
+		return redirect()->route('account');
+	}
 }

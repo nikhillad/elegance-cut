@@ -21,6 +21,10 @@
     <script src="uikit/js/respond.min.js"></script>
     <![endif]-->
     <style type="text/css">
+      .page-wrapper{
+        #background-color: #F9F9F9 !important;
+        background-color: transparent !important;
+      }
       .tag-line{
         font-weight:bold;
         color:#e95144;
@@ -81,6 +85,37 @@
         padding: 10px;
         color: #fff;
         display: none;
+      }
+      .btn-block{
+        display: -moz-box;
+      }
+      .footer-menu-xs{
+        display: block;
+        background-color: #fff;
+        margin-right: 5px;
+        margin-left: 5px;
+        text-align: center;
+        border-style:solid;
+        border-color:grey;
+        border-radius: 3px;
+        margin-bottom: 10px;
+        border-width: 0.08em;
+        border-bottom: 0px;
+      }
+      .footer-menu-xs div{
+        border-bottom: 0.08em solid grey;
+        padding: 5px 0px 5px 0px;
+      }
+      .footer-menu-xs a{
+        color: grey;
+      }
+      .footer-menu-right-icon{
+        float:right;
+        margin:5px 20px 0px 0px;
+      }
+      .object-center{
+        width: 100%;
+        text-align: center;
       }
     </style>
   </head>
