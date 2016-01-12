@@ -141,7 +141,7 @@ Register - Elegance Cut
     <script type="text/javascript">
       if({{ (isset($message) && $message != '') ? 1 : 0 }})
       {
-        $('.message-div').html("{!! (isset($message)) ? $message : '' !!}");
+        $('.message-div').html('{!! (isset($message)) ? $message : "" !!}');
         $('.message-div').show();
       }
     </script>

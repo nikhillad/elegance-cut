@@ -29,7 +29,18 @@ class IndexController extends Controller
 
     public function index()
     {	
-    	return view('home');
+    	//fetch all the categories
+    	$objCategory = App\CategoryMaster::all();
+
+    	//fetch all the item types
+    	$objType = App\TypeMaster::all();
+
+    	//get category id versus category name array
+    	$arrCetegory_id_name = getKeyValueArray('cat_id','name',$objCategory,'object');
+
+    	$arrType_id_name = getKeyValueArray('type_id','name',$objType,'object');
+
+    	return view('home',['objCategory'=>$objCategory,'objType'=>$objType,'arrCetegory_id_name'=>$arrCetegory_id_name,'arrType_id_name'=>$arrType_id_name]);
     }
 
     /**

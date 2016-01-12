@@ -1,11 +1,26 @@
 <?php
 	
-function getKeyValueArray($key,$value,$input_array)
+function getKeyValueArray($key,$value,$input_array,$type='array')
 {
-	$output_array = array();
+	if($type == 'array')
+	{
+		$output_array = array();
 
-	foreach ($input_array as $val) {
-		$output_array[$val[$key]] = $val[$value];
+		foreach ($input_array as $val) {
+			$output_array[$val[$key]] = $val[$value];
+		}
+	}
+	else if($type == 'object')
+	{
+		$output_array = array();
+
+		foreach ($input_array as $val) {
+			$output_array[$val->$key] = $val->$value;
+		}
+	}	
+	else
+	{
+		return null;
 	}
 
 	return $output_array;

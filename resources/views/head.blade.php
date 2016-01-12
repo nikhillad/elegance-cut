@@ -117,5 +117,8 @@
         width: 100%;
         text-align: center;
       }
+      .yellow-link, .yellow-link:active, .yellow-link:focus, .yellow-link:hover{
+        color:yellow;
+      }
     </style>
   </head>

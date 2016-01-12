@@ -119,11 +119,16 @@ class UserController extends Controller
 	    		if($form['password'] != $form['cnf_password'])
 		    	{
 		    		$message[] = '-Password didn\'t match. Plese type exact password in \'Confirm Password\' field.';
-		    	}	
+		    	}
+		    		
 		    	if(strlen($form['mobile']) > 10 || strlen($form['mobile']) < 10)	
 			    {
-			    	$message[] = '-Please enter only 10 digit mobile number.';		
+			    	$message[] = '-Please enter valid 10 digit mobile number.';		
 			    }
+			    if(!is_numeric($form['mobile']))
+		    	{
+		    		$message[] = '-Please enter valid 10 digit mobile number.';		
+		    	}
 			    if($form['state'] == 'select' || $form['country'] == 'select' || !array_key_exists($form['state'], $arrStates_code_state)
     			||  !array_key_exists($form['country'], $arrCountries_code_country))
     			{
@@ -157,7 +162,7 @@ class UserController extends Controller
 			    	}
 			    	catch(\Exception $e)
 			    	{
-			    		$message[] = 'Looks like the email you have entered, already exists. Please try with another email id.';
+			    		$message[] = 'Looks like something went wrong or mostly the email you entered, already exists. Kindly register with different email id or contact our support at <a class="yellow-link" href="mailto:'.config('global.support_email').'">'.config('global.support_email').'</a>';
 			    	}
 
 			    	if(isset($res) && $res == true && empty($message))
@@ -276,7 +281,11 @@ class UserController extends Controller
 	    		}	
 		    	if(strlen($form['mobile']) > 10 || strlen($form['mobile']) < 10)	
 			    {
-			    	$message[] = '-Please enter only 10 digit mobile number.';		
+			    	$message[] = '-Please enter valid 10 digit mobile number.';		
+			    }
+			    if(!is_numeric($form['mobile']))
+			    {
+			    	$message[] = '-Please enter valid 10 digit mobile number.';	
 			    }
 			    if($form['state'] == 'select' || $form['country'] == 'select' || !array_key_exists($form['state'], $arrStates_code_state)
     			||  !array_key_exists($form['country'], $arrCountries_code_country))
@@ -286,7 +295,8 @@ class UserController extends Controller
 			    
 			    if(empty($message))
 			    {
-			    	try{
+			    	try
+			    	{
 				    	//save user in database
 
 			    		unset($objUserMaster->is_logged_in);
@@ -326,7 +336,7 @@ class UserController extends Controller
 			    	}
 			    	catch(\Exception $e)
 			    	{
-			    		$message[] = 'Looks like something went wrong. Please try again or contact our support team at '.config('global.support_email');
+			    		$message[] = 'Looks like something went wrong. Please try again or contact our support team at <a class="yellow-link" href="mailto:'.config('global.support_email').'">'.config('global.support_email').'</a>';
 			    	}
 
 			    	if(isset($res) && $res == true && empty($message))

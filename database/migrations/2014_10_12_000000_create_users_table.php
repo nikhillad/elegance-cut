@@ -23,7 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('city',100);
             $table->string('state',50);
             $table->string('country',50);
-            $table->string('status',1);
+            $table->integer('status',1)->default(1);
             $table->dateTime('last_login');
             $table->string('password', 60);
             $table->rememberToken();

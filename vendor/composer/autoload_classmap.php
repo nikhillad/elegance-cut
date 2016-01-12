@@ -6,6 +6,8 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'AddAccountTypeUserMasterTable' => $baseDir . '/database/migrations/2016_01_12_174650_add_account_type_user_master_table.php',
+    'AddFeaturedItemMasterTable' => $baseDir . '/database/migrations/2016_01_12_174731_add_featured_item_master_table.php',
     'AddTokenTypeTokenMaster' => $baseDir . '/database/migrations/2016_01_10_192506_add_token_type_token_master.php',
     'CreateCategoryMasterTable' => $baseDir . '/database/migrations/2016_01_06_175807_create_category_master_table.php',
     'CreateItemImageMasterForeignKey' => $baseDir . '/database/migrations/2016_01_06_183753_create_item_image_master_foreign_key.php',
