@@ -120,5 +120,23 @@
       .yellow-link, .yellow-link:active, .yellow-link:focus, .yellow-link:hover{
         color:yellow;
       }
+      .left-align-header-h4{
+        background-color: #D3DCE3;
+        padding: 6px 15px;
+        margin-bottom: 2px;
+        color: black;
+      }
+      .desc{
+        display: inline !important;
+        text-transform: capitalize;
+      }
+      .product .title{
+        padding: 0px 30px 0px 30px;
+        word-wrap: break-word;
+      }
+      .button-div-center{
+        width: 100%;
+        text-align: center;
+      }
     </style>
   </head>

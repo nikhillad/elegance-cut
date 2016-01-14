@@ -23,12 +23,20 @@ class AppServiceProvider extends ServiceProvider
             //fetch all the item types
             $arrType = DB::table('type_master')->get();
 
+            foreach ($arrCategory as $key => $category) {
+               
+                foreach ($arrType as $key1 => $type) {
+                    if($type->category == $category->cat_id)
+                        $arrTypeCategoryWise[$category->cat_id][] = $type;
+                }
+            }
+
             //get category id versus category name array
             $arrCetegory_id_name = getKeyValueArray('cat_id','name',$arrCategory,'object');
 
             $arrType_id_name = getKeyValueArray('type_id','name',$arrType,'object');
             
-            $view->with(compact('arrCategory','arrType','arrCetegory_id_name','arrType_id_name'));
+            $view->with(compact('arrTypeCategoryWise','arrCategory','arrType','arrCetegory_id_name','arrType_id_name'));
         });
     }
 

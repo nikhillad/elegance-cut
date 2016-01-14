@@ -44,7 +44,9 @@ class UserController extends Controller
 	    	$form['password'] 		= $request->input('password','');
 	    	$form['remember_me'] 	= $request->input('remember_me','');
 	    		
-	    	$objUser = App\UserMaster::where('email',$form['email'])->first();
+	    	$objUser = App\UserMaster::where('email',$form['email'])
+	    				->where('status',1)
+	    				->first();
 
 	    	if($objUser == NULL || (md5($form['password']) !== $objUser->password))
 	    	{
@@ -231,7 +233,13 @@ class UserController extends Controller
 		if(!$this->user_session->is_logged_in)
 			return redirect()->route('login');
 
+		$message = '';
+		
 		$objUserMaster = $this->user_session;
+			
+		//crossverify the object
+		if(!isset($objUserMaster->fname))
+			$message[] = 'Something went wrong. Please try again.';
 
 		if($objUserMaster == null)
 			return redirect()->route('login');
@@ -253,7 +261,6 @@ class UserController extends Controller
 		$form['country'] = $objUserMaster->country;
 		
 		
-		$message = '';
 		$current_email = $form['email'];
 		$current_mobile = $form['mobile'];
 		$email_verification_require = false;

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddAccountTypeUserMasterTable extends Migration
+class AddItemImageItemMaster extends Migration
 {
     /**
      * Run the migrations.
@@ -12,8 +12,8 @@ class AddAccountTypeUserMasterTable extends Migration
      */
     public function up()
     {
-        Schema::table('user_master', function (Blueprint $table) {
-            $table->string('account_type',20)->default('general');
+        Schema::table('item_master', function (Blueprint $table) {
+            $table->string('item_image',250);
         });
     }
 
@@ -24,8 +24,8 @@ class AddAccountTypeUserMasterTable extends Migration
      */
     public function down()
     {
-        Schema::table('user_master', function (Blueprint $table) {
-            $table->dropColumn('account_type');
+        Schema::table('item_master', function (Blueprint $table) {
+            $table->dropColumn('item_image');
         });
     }
 }

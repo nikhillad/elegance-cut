@@ -29,7 +29,13 @@ function getKeyValueArray($key,$value,$input_array,$type='array')
 function login($objUser,$remember_me = false)
 {
 	//session_start();
-	
+	if(empty($objUser) || $objUser == '')
+		return false;	
+
+	DB::table('user_master')
+            ->where('user_id', $objUser->user_id)
+            ->update(['last_login' => date('Y-m-d H:i:s')]);
+
 	$_SESSION['elegance_cut_user']['obj'] = $objUser;
 
 	$cookie_name = 'elegance_cut_user';
@@ -104,7 +110,9 @@ function validate_session()
 			$arrayCookieVariables = getCookieVariables(decryptCookie($_COOKIE['elegance_cut_user']));
 
 			//get user data
-			$objUser = App\UserMaster::find($arrayCookieVariables[1])->first();
+			$objUser = App\UserMaster::where('user_id',$arrayCookieVariables[1])
+						->where('status',1)
+						->first();
 
 			if(in_array('remember', $arrayCookieVariables))
 			{

@@ -14,9 +14,13 @@ class Controller extends BaseController
 
 	 function __construct() {
 
-	 	 session_start();
+	 	session_start();
 	 	 
-	 	 $this->user_session = validate_session();
+	 	$this->user_session = validate_session();
 
+	 	$protocol = (isset($_SERVER['HTTPS'])) ? 'https://' : 'http://';
+		$web_root = $protocol . $_SERVER['HTTP_HOST'];
+
+		define('WEB_ROOT',$web_root);
 	 }	
 }

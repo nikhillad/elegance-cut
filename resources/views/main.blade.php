@@ -206,17 +206,15 @@
                         <img class="featured-img hidden-xs hidden-sm" src="images/menu-pic.jpg" alt="">
                       </div>
                       
-                      @foreach(array_chunk($arrType,7) as $type_group)
+                      @foreach(array_chunk($arrTypeCategoryWise[$category->cat_id],7) as $type_group)
                         
                         <div class="col-md-3">
                         
                         <ul class="links">
                         @foreach ($type_group as $type)
-                            @if ($type->category == $category->cat_id)
                             
                                 <li><a href="category.html">{{$type->name}}</a></li>
-                              
-                            @endif  
+                             
                         @endforeach
                         </ul>
                         </div>
@@ -306,7 +304,7 @@
             <div class="col-md-3 brand-col brand-center">
               <div class="vcenter">
                 <a class="vcenter-this" href="#">
-                  <img src="images/logo_184x136.jpg" alt="logo"/>
+                  <img src="{{asset('images/logo_184x136.jpg')}}" alt="logo"/>
                   <br>
                    <span class="tag-line">Be Elegant, Be Unique</span>
                 </a>
@@ -359,15 +357,15 @@
                 <div class="col-xs-12 col-sm-3 col-md-3 newsletter">
                   <h5>payment methods</h5>
                   <ul class="grid-list cols-3 cell-pad-5">
-                    <li><img src="images/cards/amazon.png" alt=""></li>
-                    <li><img src="images/cards/paypal.png" alt=""></li>
-                    <li><img src="images/cards/visa.png" alt=""></li>
-                    <li><img src="images/cards/mastercard.png" alt=""></li>
-                    <li><img src="images/cards/maestro.png" alt=""></li>
-                    <li><img src="images/cards/obopay.png" alt=""></li>
-                    <li><img src="images/cards/discover.png" alt=""></li>
-                    <li><img src="images/cards/cirrus.png" alt=""></li>
-                    <li><img src="images/cards/google.png" alt=""></li>
+                    <li><img src="{{asset('images/cards/amazon.png')}}" alt=""></li>
+                    <li><img src="{{asset('images/cards/paypal.png')}}" alt=""></li>
+                    <li><img src="{{asset('images/cards/visa.png')}}" alt=""></li>
+                    <li><img src="{{asset('images/cards/mastercard.png')}}" alt=""></li>
+                    <li><img src="{{asset('images/cards/maestro.png')}}" alt=""></li>
+                    <li><img src="{{asset('images/cards/obopay.png')}}" alt=""></li>
+                    <li><img src="{{asset('images/cards/discover.png')}}" alt=""></li>
+                    <li><img src="{{asset('images/cards/cirrus.png')}}" alt=""></li>
+                    <li><img src="{{asset('images/cards/google.png')}}" alt=""></li>
                   </ul>
                 </div>
                 <!-- /Col -->
