@@ -1,13 +1,24 @@
 <?php
-	
-function getKeyValueArray($key,$value,$input_array,$type='array')
+
+function filter_form_input($input = '')
+{
+	if($input == '')
+		return '';
+
+	return strip_tags(trim($input));
+}	
+
+function getKeyValueArray($key,$value,$input_array,$type='array',$full_obj_response=false)
 {
 	if($type == 'array')
 	{
 		$output_array = array();
 
 		foreach ($input_array as $val) {
-			$output_array[$val[$key]] = $val[$value];
+			if($full_obj_response)
+				$output_array[$val[$key]] = $val;
+			else
+				$output_array[$val[$key]] = $val[$value];
 		}
 	}
 	else if($type == 'object')
@@ -15,7 +26,10 @@ function getKeyValueArray($key,$value,$input_array,$type='array')
 		$output_array = array();
 
 		foreach ($input_array as $val) {
-			$output_array[$val->$key] = $val->$value;
+			if($full_obj_response)
+				$output_array[$val->$key] = $val;
+			else
+				$output_array[$val->$key] = $val->$value;
 		}
 	}	
 	else

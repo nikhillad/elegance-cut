@@ -15,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        view()->composer('main', function($view)
+        view()->composer(['main','main_wo_header_nav','category_items'], function($view)
         {
             //fetch all the categories
             $arrCategory = DB::table('category_master')->get();

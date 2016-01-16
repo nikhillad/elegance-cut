@@ -29,6 +29,7 @@ class UserController extends Controller
 	 */    
 	public function login(Request $request)
 	{
+
 		if($this->user_session->is_logged_in)
 			return redirect()->route('home');
 
@@ -40,9 +41,9 @@ class UserController extends Controller
 	    		return view('user.login',['message'=>$message]);
 	    	}
 
-	    	$form['email'] 			= $request->input('email','');
+	    	$form['email'] 			= filter_form_input($request->input('email',''));
 	    	$form['password'] 		= $request->input('password','');
-	    	$form['remember_me'] 	= $request->input('remember_me','');
+	    	$form['remember_me'] 	= filter_form_input($request->input('remember_me',''));
 	    		
 	    	$objUser = App\UserMaster::where('email',$form['email'])
 	    				->where('status',1)
@@ -92,18 +93,18 @@ class UserController extends Controller
 		$arrStates_code_state = getKeyValueArray('code','state',$arrStates);
 		$arrCountries_code_country = getKeyValueArray('code','country',$arrCountries);
 
-		$form['fname'] 			= $request->input('fname','');
-		$form['lname'] 			= $request->input('lname','');
+		$form['fname'] 			= filter_form_input($request->input('fname',''));
+		$form['lname'] 			= filter_form_input($request->input('lname',''));
     	$form['password'] 		= $request->input('password','');
     	$form['cnf_password'] 	= $request->input('cnf_password','');
-    	$form['email'] 			= $request->input('email','');
-    	$form['mobile'] 		= $request->input('mobile','');
-    	$form['zip'] 			= $request->input('zip','');
-    	$form['address'] 		= $request->input('address','');
-    	$form['city'] 			= $request->input('city','');
-    	$form['state'] 			= $request->input('state','');
-    	$form['country'] 		= $request->input('country','');
-    	$form['tnc'] 			= $request->input('tnc','');
+    	$form['email'] 			= filter_form_input($request->input('email',''));
+    	$form['mobile'] 		= filter_form_input($request->input('mobile',''));
+    	$form['zip'] 			= filter_form_input($request->input('zip',''));
+    	$form['address'] 		= filter_form_input($request->input('address',''));
+    	$form['city'] 			= filter_form_input($request->input('city',''));
+    	$form['state'] 			= filter_form_input($request->input('state',''));
+    	$form['country'] 		= filter_form_input($request->input('country',''));
+    	$form['tnc'] 			= filter_form_input($request->input('tnc',''));
 
     	$message = '';
 
@@ -217,6 +218,10 @@ class UserController extends Controller
 
 		$objUserMaster = $this->user_session;
 
+		//crossverify the object
+		if(!isset($objUserMaster->fname))
+			$message[] = 'Something went wrong. Please try again.';
+		
 		if($objUserMaster == null)
 			return redirect()->route('login');
 
@@ -268,15 +273,15 @@ class UserController extends Controller
 
     	if ($request->isMethod('post')) 
     	{
-    		$form['fname'] 			= $request->input('fname','');
-			$form['lname'] 			= $request->input('lname','');
-	    	$form['email'] 			= $request->input('email','');
-	    	$form['mobile'] 		= $request->input('mobile','');
-	    	$form['zip'] 			= $request->input('zip','');
-	    	$form['address'] 		= $request->input('address','');
-	    	$form['city'] 			= $request->input('city','');
-	    	$form['state'] 			= $request->input('state','');
-	    	$form['country'] 		= $request->input('country','');
+    		$form['fname'] 			= filter_form_input($request->input('fname',''));
+			$form['lname'] 			= filter_form_input($request->input('lname',''));
+	    	$form['email'] 			= filter_form_input($request->input('email',''));
+	    	$form['mobile'] 		= filter_form_input($request->input('mobile',''));
+	    	$form['zip'] 			= filter_form_input($request->input('zip',''));
+	    	$form['address'] 		= filter_form_input($request->input('address',''));
+	    	$form['city'] 			= filter_form_input($request->input('city',''));
+	    	$form['state'] 			= filter_form_input($request->input('state',''));
+	    	$form['country'] 		= filter_form_input($request->input('country',''));
 
 	    	if($form['fname'] != '' && $form['lname'] != '' && $form['email'] != '' && $form['email'] != '' && $form['mobile'] != '' && $form['zip'] != ''
 	    		&& $form['address'] != '' && $form['city'] != ''
@@ -396,6 +401,10 @@ class UserController extends Controller
 
 		$objUserMaster = $this->user_session;
 
+		//crossverify the object
+		if(!isset($objUserMaster->fname))
+			$message[] = 'Something went wrong. Please try again.';
+
 		if($objUserMaster == null)
 			return redirect()->route('login');
 
@@ -442,7 +451,7 @@ class UserController extends Controller
 			return redirect()->route('login');
 
 
-		if(in_array($token_type,config('global.token_types')))
+		if(in_array(trim($token_type),config('global.token_types')))
 		{
 			$objTokenMaster = App\TokenMaster::where('user_id',$objUserMaster->user_id)
 				->where('expire_on','>',date('Y-m-d H:i:s',time()))

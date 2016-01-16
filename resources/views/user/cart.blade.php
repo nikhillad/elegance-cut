@@ -1,4 +1,4 @@
-@extends('main_wo_header')
+@extends('main_wo_header_nav')
 
 @section('title')
 Elegance Cut

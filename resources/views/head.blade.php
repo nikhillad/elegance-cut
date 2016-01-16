@@ -125,6 +125,7 @@
         padding: 6px 15px;
         margin-bottom: 2px;
         color: black;
+        text-transform: capitalize;
       }
       .desc{
         display: inline !important;
@@ -137,6 +138,12 @@
       .button-div-center{
         width: 100%;
         text-align: center;
+      }
+      .white-text{
+        color: #fff;
+      }
+      .grey-text{
+        color: #807F83;
       }
     </style>
   </head>

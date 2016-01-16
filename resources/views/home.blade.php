@@ -111,11 +111,108 @@ Elegance Cut
                 <!-- Row -->
                 <div class="row">
                   
-                  @foreach ($arrItemCategoryWise as $cat_id => $items)
-                  <div>
-                  <div class="col-xs-12 generic-page-header-left">
-                    <h4 class="left-align-header-h4">{{$arrCetegory_id_name[$cat_id]}}</h4>
+                    @foreach ($arrItemCategoryWise as $cat_id => $items)
+                    <div>
+                    <div class="col-xs-12 generic-page-header-left">
+                      <h4 class="left-align-header-h4">{{$arrCetegory_id_obj[$cat_id]->name}}</h4>
+                    </div>
+
+                    <div class="clearfix"></div>
+
+                    @if (empty($items))
+                      <div class="object-center">
+                        <h4><i class="fa fa-meh-o"></i> Oops! No items found under this section.</h4>
+                      </div>
+                    @else
+
+                    @foreach ($items as $item)
+                    <!-- Col -->
+                    <div class="col-sm-6 col-md-3">
+                  
+                      <!-- product -->
+                      <div class="product clearfix">
+                    
+                          <!-- Image -->
+                          <div class="image"> 
+                            <a href="product.html" class="main"><img src="{{WEB_ROOT}}/images/products/{{strtoupper($item->item_image[0])}}/{{$item->item_image}}" alt=""></a>
+                          </div>
+                          <!-- Image -->
+                          
+                          <!-- <span class="label label-sale">sale</span> -->
+                          
+                          <!-- Details -->
+                          <div class="details">
+                        
+                              <a class="title" href="product.html" title="{{$item->name}}">{{strlen($item->name) > 85 ? substr($item->name,0,80)."..." : $item->name}}</a>
+                              
+                              <!-- rating -->
+                              <!-- <ul class="hlinks hlinks-rating">
+                                <li class="active"><a href="#"><i class="icon fa fa-star"></i></a></li>
+                                <li class="active"><a href="#"><i class="icon fa fa-star"></i></a></li>
+                                <li class="active"><a href="#"><i class="icon fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="icon fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="icon fa fa-star"></i></a></li>
+                              </ul> -->
+                              <!-- /rating -->
+                              
+                              <p class="desc">{{strtolower($item->type_name)}}</p>
+                              
+                              <!-- Price Box -->
+                              <div class="price-box">
+                                 <!--  <span class="price price-old">$2350</span> -->
+                                 <span class="price"><i class="fa fa-inr"></i> {{$item->price}}</span>
+                              </div>
+                                <!-- /Price Box -->
+                                
+                                <!-- buttons -->
+                               <!--  <div class="btn-group">
+                                  <a class="btn btn-outline btn-base-hover" href="cart.html">add to cart</a>  
+                                  <a class="btn btn-outline btn-default-hover" href="product.html"><i class="icon fa fa-heart"></i></a>
+                                </div>  -->
+                                <!-- /buttons -->
+                        
+                          </div>
+                          <!-- /Details -->
+                    </div>
+                    <!-- /product -->
+                      
+                      </div>
+                      @endforeach
+                      @endif
+                  <!-- /Col -->
+                      <div style="clear:both"></div>
+                      <div class="button-div-center">
+                        <a href="{{route('category_page',['cat_code'=>$arrCetegory_id_obj[$cat_id]->cat_code])}}" class="btn btn-primary">More</a>
+                      </div> 
                   </div>
+                  @endforeach
+
+                </div>
+                <!-- /Row -->
+              
+              </div>
+              <!-- /Tab Latest -->
+              
+            
+              <!-- Tab Featured -->
+              <div class="tab-pane" id="tab-featured">
+              
+                <!-- Row -->
+                <div class="row">
+                
+                  @foreach ($arrItemCategoryWise_featured as $cat_id => $items)
+                  <div>
+                      <div class="col-xs-12 generic-page-header-left">
+                        <h4 class="left-align-header-h4">{{$arrCetegory_id_obj[$cat_id]->name}}</h4>
+                      </div>
+
+                      <div class="clearfix"></div>
+
+                      @if (empty($items))
+                        <div class="object-center">
+                          <h4><i class="fa fa-meh-o"></i> Oops! No items found under this section.</h4>
+                        </div>
+                      @else
 
                       @foreach ($items as $item)
                       <!-- Col -->
@@ -171,27 +268,15 @@ Elegance Cut
                       
                       </div>
                       @endforeach
-                  <!-- /Col -->
-                      <div class="button-div-center">
-                        <a href="" class="btn btn-primary">More</a>
-                      </div> 
-                  </div>
-                  @endforeach
 
-                </div>
-                <!-- /Row -->
-              
-              </div>
-              <!-- /Tab Latest -->
-              
-            
-              <!-- Tab Featured -->
-              <div class="tab-pane" id="tab-featured">
-              
-                <!-- Row -->
-                <div class="row">
-                
-                  
+                  <!-- /Col -->
+                      <div style="clear:both"></div>
+                      <div class="button-div-center">
+                        <a href="{{route('category_page',['cat_code'=>$arrCetegory_id_obj[$cat_id]->cat_code])}}" class="btn btn-primary">More</a>
+                      </div> 
+                      @endif
+                  </div>
+                  @endforeach  
                 
                 </div>
                 <!-- /Row -->

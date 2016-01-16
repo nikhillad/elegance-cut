@@ -49,4 +49,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::match(['get', 'post'], '/my-account/edit', ['as' => 'edit_account', 'uses' => 'UserController@edit_account']);
 
     Route::get('verify/{token_type}', ['as' => 'generate_verify_link', 'uses' => 'UserController@generate_verify_link']);
+
+    Route::get('category/{cat_code}', ['as' => 'category_page', 'uses' => 'CategoryController@index']);
+
+    Route::get('item/{type_code}', ['as' => 'type_page', 'uses' => 'TypeController@index']);
 });
