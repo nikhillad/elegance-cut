@@ -134,7 +134,7 @@ Elegance Cut
                     
                           <!-- Image -->
                           <div class="image"> 
-                            <a href="product.html" class="main"><img src="{{WEB_ROOT}}/images/products/{{strtoupper($item->item_image[0])}}/{{$item->item_image}}" alt=""></a>
+                            <a href="product.html" class="main"><img src="data:image/jpeg;base64,{{base64_encode(thumbnailImage(DOCUMENT_ROOT.'images/products/'.strtoupper($item->item_image[0]).'/'.$item->item_image))}}" alt=""></a>
                           </div>
                           <!-- Image -->
                           
@@ -223,7 +223,7 @@ Elegance Cut
                         
                           <!-- Image -->
                           <div class="image"> 
-                            <a href="product.html" class="main"><img src="{{WEB_ROOT}}/images/products/{{strtoupper($item->item_image[0])}}/{{$item->item_image}}" alt=""></a>
+                            <a href="product.html" class="main"><img src="data:image/jpeg;base64,{{base64_encode(thumbnailImage(DOCUMENT_ROOT.'images/products/'.strtoupper($item->item_image[0]).'/'.$item->item_image))}}" alt=""></a>
                           </div>
                           <!-- Image -->
                           

@@ -32,7 +32,7 @@
               
                 <!-- col -->
                 <div class="col-md-3">
-                  <img class="featured-img hidden-xs hidden-sm" src="{{asset('images/menu-pic.jpg')}}" alt="">
+                  <img class="featured-img hidden-xs hidden-sm" src="{{WEB_ROOT.'/images/'.$category->menu_image}}" alt="">
                 </div>
                 
                 @foreach(array_chunk($arrTypeCategoryWise[$category->cat_id],7) as $type_group)

@@ -22,5 +22,6 @@ class Controller extends BaseController
 		$web_root = $protocol . $_SERVER['HTTP_HOST'];
 
 		define('WEB_ROOT',$web_root);
+		define('DOCUMENT_ROOT',$_SERVER['DOCUMENT_ROOT']);
 	 }	
 }
