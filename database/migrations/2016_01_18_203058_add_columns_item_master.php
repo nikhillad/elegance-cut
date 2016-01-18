@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddItemImageItemMaster extends Migration
+class AddColumnsItemMaster extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,8 @@ class AddItemImageItemMaster extends Migration
     public function up()
     {
         Schema::table('item_master', function (Blueprint $table) {
-            $table->string('item_image',250);
+            $table->text('specs')->nullable();
+            $table->text('add_info')->nullable();
         });
     }
 
@@ -25,7 +26,8 @@ class AddItemImageItemMaster extends Migration
     public function down()
     {
         Schema::table('item_master', function (Blueprint $table) {
-            $table->dropColumn('item_image');
+            $table->dropColumn('specs');
+            $table->dropColumn('add_info');
         });
     }
 }

@@ -52,5 +52,7 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::get('category/{cat_code}', ['as' => 'category_page', 'uses' => 'CategoryController@index']);
 
-    Route::get('item/{type_code}', ['as' => 'type_page', 'uses' => 'TypeController@index']);
+    Route::get('type/{type_code}', ['as' => 'type_page', 'uses' => 'TypeController@index']);
+
+    Route::get('product/{item_code}', ['as' => 'product', 'uses' => 'ItemController@index']);
 });

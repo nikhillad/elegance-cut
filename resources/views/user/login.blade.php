@@ -33,9 +33,14 @@ Login - Elegance Cut
                     <input name="password" type="password" class="form-control" placeholder="Password">
                   </div>
                 </div>
-                <div class="form-group">
+                <div class="hidden-xs form-group">
                   <label class="checkbox-inline"><input name="remember_me" type="checkbox" value="selected">Remember me </label>
                   <a href="" class="pull-right">Forgot password?</a>
+                </div>
+                <div class="visible-xs form-group">
+                  <label class="checkbox-inline"><input name="remember_me" type="checkbox" value="selected">Remember me </label>
+                  <br>
+                  <a href="" class="">Forgot password?</a>
                 </div>
                 {{csrf_field()}}
                 <button class="btn btn-default btn-lg btn-block">Sign in</button>
@@ -50,7 +55,7 @@ Login - Elegance Cut
             <br>
             <div class="align-center"><a href="{{route('home')}}" class="btn btn-primary">Back to home</a></div>
           </div>
-           <div style="margin-bottom:20px" class="col-xs-12 visible-xs">
+          <div style="margin-bottom:20px" class="col-xs-12 visible-xs">
             <div class="align-center">Dont have an Account? <a href="{{route('register')}}">Sign Up</a></div>
             <br>
             <div class="align-center"><a href="{{route('home')}}" class="btn btn-primary">Back to home</a></div>

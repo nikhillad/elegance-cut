@@ -40,7 +40,7 @@ Elegance Cut
                   
                     <!-- Image -->
                     <div class="image"> 
-                      <a href="product.html" class="main"><img src="data:image/jpeg;base64,{{base64_encode(thumbnailImage(DOCUMENT_ROOT.'images/products/'.strtoupper($item->item_image[0]).'/'.$item->item_image))}}" alt=""></a>
+                      <a href="{{route('product',['item_id'=>$item->item_id])}}" class="main"><img src="data:image/jpeg;base64,{{base64_encode(thumbnailImage(DOCUMENT_ROOT.'images/products/'.strtoupper($item->item_image[0]).'/'.$item->item_image))}}" alt=""></a>
                     </div>
                     <!-- Image -->
                     
@@ -49,7 +49,7 @@ Elegance Cut
                     <!-- Details -->
                     <div class="details">
                     
-                      <a class="title" href="product.html" title="{{$item->name}}">{{strlen($item->name) > 85 ? substr($item->name,0,80)."..." : $item->name}}</a>
+                      <a class="title" href="{{route('product',['item_id'=>$item->item_id])}}" title="{{$item->name}}">{{strlen($item->name) > 85 ? substr($item->name,0,80)."..." : $item->name}}</a>
                       
                       <!-- rating -->
                       <!-- <ul class="hlinks hlinks-rating">

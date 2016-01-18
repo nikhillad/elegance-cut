@@ -8,7 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App;
 use DB;
-use config;
+use Config;
 
 class TypeController extends Controller
 {
