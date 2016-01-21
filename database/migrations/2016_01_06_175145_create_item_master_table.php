@@ -19,6 +19,7 @@ class CreateItemMasterTable extends Migration
             $table->integer('price');
             $table->string('currency','50')->default('INR');
             $table->integer('item_type')->unsigned();
+            $table->integer('qty');
             $table->timestamps();
         });
     }

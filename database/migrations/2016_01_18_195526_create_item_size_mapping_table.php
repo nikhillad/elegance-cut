@@ -16,6 +16,7 @@ class CreateItemSizeMappingTable extends Migration
             $table->increments('item_size_id');
             $table->integer('size_id');
             $table->integer('item_id')->unsigned();
+            $table->integer('qty')->default(0);
             $table->foreign('item_id')->references('item_id')->on('item_master');
         });
     }

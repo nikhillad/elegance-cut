@@ -31,10 +31,116 @@ class ItemController extends Controller
 
 		    	$arrType_id_obj = getKeyValueArray('type_id','name',$objType,'object',true);
 
+                $size = null;
+                $message = '';
+                $show_size_chart = false;
+
+                if($objItem->qty==null)
+                    $show_size_chart=true;
+
+                if($show_size_chart==true)
+                {
+                    //get item sizes
+                    $objSizes = DB::table('item_size_master')->where('item_id',$objItem->item_id)
+                            ->join('size_master','size_master.size_id','=','item_size_master.size_id')
+                            ->select('item_size_master.*','size_master.*')
+                            ->get();
+
+                    $arrSize_id_size_code = getKeyValueArray('size_id','size_code',$objSizes,'object',false);        
+                }
+
+                //get total available quantity
+                $total_available_qty = 0; 
+                if($show_size_chart)
+                {
+                    foreach ($objSizes as $key => $value) {
+                        $total_available_qty = $total_available_qty + $value->qty;
+                    }
+                }
+                else
+                {
+                    if($objItem->qty != null)
+                        $total_available_qty = $objItem->qty;
+                }
+
+                if ($request->isMethod('post')) 
+                {
+                    //check size is valid
+                    if($show_size_chart ==  true)
+                    {  
+                        $size = filter_form_input($request->input('size',''));
+                        $size_valid = false;
+                        foreach ($objSizes as $key => $value) {
+                           if($value->qty > 0 && $value->size_code == $size)
+                              $size_valid = true;    
+                        }
+
+                        if(!$size_valid)
+                            $message[] = 'Plese select size first.';
+                    }   
+                      
+                    $qty = filter_form_input($request->input('qty',''));
+
+                    if($message == '')
+                    {
+                        if($qty != '' && is_numeric($qty) && $qty <= $total_available_qty)
+                        {
+                            if($this->user_session->is_logged_in == true)
+                                $user_id = $this->user_session->user_id;
+                            else
+                                $user_id = null;
+
+                            if($this->user_session->is_logged_in)
+                            {
+                                $check_if_already_added = App\CartMaster::where( function ( $query )
+                                            {
+                                                $query->where('user_id',(int)$this->user_session->user_id)
+                                                    ->orWhere('session_id',session_id());
+                                            })
+                                            ->where('item_id',(int)$objItem->item_id)->first();
+                            }
+                            else
+                            {
+                                $check_if_already_added = App\CartMaster::where('session_id',session_id())->where('item_id',(int)$objItem->item_id)->first();
+                            }
+
+                            if(null == $check_if_already_added)
+                            {
+                                //add to cart
+                                DB::connection('mongodb')->table('cart')->insert(
+                                    ['item_id' => (int)$objItem->item_id, 'user_id' => (int)$user_id, 'session_id' => session_id(), 'qty'=> (int)$qty, 'size' => $size, 'price' => $objItem->price]
+                                );
+
+                                return redirect()->route('cart');
+                            }
+                            else
+                            {
+                                $message[] = 'You already have added this item to your cart.';
+                            }
+                        }
+                        else
+                        {   
+                           $message[] = 'Oops! the selected quantity is not available. Plese select lesser quantity.';
+                        }
+                    }
+
+                }
 		    	//other product images
 		    	$objProductImages = array();
 
-    			return view('product.product',compact('objProductImages','objItem','objCategory','objType','arrCetegory_id_obj','arrType_id_obj'));
+                if(is_array($message))
+                {
+                    $temp = '';
+
+                    foreach($message as $value)
+                    {
+                        $temp = $temp.$value.'<br>';
+                    }
+
+                    $message = $temp;
+                }
+
+    			return view('product.product',compact('total_available_qty','message','show_size_chart','objSizes','objProductImages','objItem','objCategory','objType','arrCetegory_id_obj','arrType_id_obj'));
     		}
     		else
     		{
@@ -45,5 +151,10 @@ class ItemController extends Controller
     	{
     		abort(404);
     	}
+    }
+
+    public function add_to_cart()
+    {
+
     }
 }

@@ -30,7 +30,11 @@ Route::group(['middleware' => ['web']], function () {
 
 	Route::match(['get', 'post'], 'sign-up', ['as' => 'register', 'uses' => 'UserController@register']);
 
-	Route::get('cart', ['as' => 'cart', 'uses' => 'UserController@cart']);
+	Route::get('cart', ['as' => 'cart', 'uses' => 'CartController@index']);
+
+	Route::get('cart/remove/{item_id}', ['as' => 'remove_cart_item', 'uses' => 'CartController@remove_item']);
+
+	Route::post('cart/change-qty', ['as' => 'change_qty', 'uses' => 'CartController@change_qty']);
 
 	Route::get('my-account', ['as' => 'account', 'uses' => 'UserController@account']);
 
@@ -54,5 +58,8 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::get('type/{type_code}', ['as' => 'type_page', 'uses' => 'TypeController@index']);
 
-    Route::get('product/{item_code}', ['as' => 'product', 'uses' => 'ItemController@index']);
+    Route::match(['get','post'],'product/{item_code}', ['as' => 'product', 'uses' => 'ItemController@index']);
+
+    Route::get('product/add-to-cart', ['as' => 'add_to_cart', 'uses' => 'ItemController@add_to_cart']);
+
 });

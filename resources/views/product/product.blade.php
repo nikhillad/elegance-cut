@@ -12,10 +12,11 @@ Elegance Cut
 <section class="content-block default-bg">
   <!-- Container -->
   <div class="container">
-    
     <!-- Row -->
     <div class="row">
-
+          <div class="col-sm-12">
+            <div class="message-div"></div>
+          </div>
        <!-- Product Row -->
           <div class="product-details">
           
@@ -62,6 +63,8 @@ Elegance Cut
               
               <h3 class="product-title" style="padding-left:10px">{{$objItem->name}}</h3>
               
+              <h5 style="padding-left:10px;margin-top:-5px">{{$arrType_id_obj[$objItem->item_type]->name}}</h5>
+
               <div class="price-box" style="padding-left:10px">
                 <h4 class="product-price"><i class="fa fa-inr"></i> {{$objItem->price}}</h4>
               </div>
@@ -141,8 +144,11 @@ Elegance Cut
               </div>
               <!-- /Accordion -->
 
+              <form method="post" action="{{route('product',['item_id'=>$objItem->item_id])}}">
               <!-- Row -->
               <div class="row grid-20">
+
+                @if ($show_size_chart == true)
                 <!-- Col -->
                 <div class="col-md-6">
                   <!-- /Form Group -->
@@ -150,30 +156,43 @@ Elegance Cut
                     <!-- Input Group -->
                     <div class="input-group">
                       <div class="input-group-addon"><i class="icon fa fa-male"></i></div>
-                      <select class="form-control">
-                        <option>Select size</option>
-                        <option>Large</option>
-                        <option>Medium</option>
-                        <option>Small</option>
+                      <select name="size" class="form-control">
+                        <option value="select">Select size</option>
+
+                        @foreach ($objSizes as $size)
+                          @if($size->qty == 0)
+                            <option value="{{$size->size_code}}" disabled>{{$size->name}}</option>
+                          @else
+                            <option value="{{$size->size_code}}">{{$size->name}}</option>
+                          @endif    
+                        @endforeach
+                      
                       </select>
                     </div>
                     <!-- /Input Group -->
                   </div>
                 </div>
                 <!-- /Col -->
-                
+                @endif
+
                 <!-- Col -->
                 <div class="col-md-6">
                   <div class="form-group">
                     <!-- Input Group -->
                     <div class="input-group">
                       <div class="input-group-addon"><i class="icon fa fa-calculator"></i></div>
-                      <select class="form-control">
-                        <option>Select Quantity</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
+                      <select name="qty" class="form-control">
+                        <option value="select">Select Quantity</option>
+                        <option value="1" selected>1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
                       </select>
                     </div>
                     <!-- /Input Group -->
@@ -186,8 +205,14 @@ Elegance Cut
                 
               </div>
               <!-- /Row -->
-              
-              <a href="cart.html" class="btn btn-default btn-bigger"><i class="icon-left ti ti-shopping-cart"></i>Buy Now</a>
+              {{csrf_field()}}
+              <button type="submit" class="btn btn-primary btn-bigger" {{($total_available_qty < 1) ? 'disabled' : ''}}><i class="icon-left ti ti-shopping-cart"></i>Buy Now</button>
+              @if ($total_available_qty < 1)
+               <span style="font-size:13px" class="label label-danger">Out of stock!</span>
+              @endif  
+
+              </form>
+
             </div>
             <!-- /Col -->
             
@@ -208,7 +233,7 @@ Elegance Cut
     <script type="text/javascript">
       if({{ (isset($message) && $message != '') ? 1 : 0 }})
       {
-        $('.message-div').html('{{ (isset($message)) ? $message : ''}}');
+        $('.message-div').html('{!! (isset($message)) ? $message : '' !!}');
         $('.message-div').show();
       }
     </script>

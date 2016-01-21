@@ -145,5 +145,8 @@
       .grey-text{
         color: #807F83;
       }
+      .red-text{
+        color: #E7214C;
+      }
     </style>
   </head>

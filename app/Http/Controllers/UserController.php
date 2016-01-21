@@ -424,16 +424,6 @@ class UserController extends Controller
 		return view('orders');
 	}
 
-	 /**
-	 * Cart function. Shows user shopping cart
-	 *
-	 * @return view
-	 */
-
-    public function cart()
-    {	
-    	return view('user.cart');
-    }
 
     /**
 	 * Generate verification link and send
