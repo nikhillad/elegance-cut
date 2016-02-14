@@ -33,16 +33,34 @@ class CartController extends Controller
     		$cart_total_price = $cart_total_price + ($value['price']*$value['qty']);
     		$cart_total_items++;
 
-    		$item = App\ItemMaster::find($value['item_id']);
+    		$item = App\ItemMaster::where('item_id',$value['item_id'])->where('status',1)->first;
 
     		if(null != $item)
+    		{
+    			//check if offers available for item type
+    			//get coupon information if any	
+	            $intCouponMaster = DB::table('coupon_master')
+	                    ->join('coupon_type_master','coupon_type_master.coupon_id','=','coupon_master.coupon_id')
+	                    ->where('coupon_master.status', 1)
+	                    ->where('coupon_type_master.type_id', $item->item_type)
+	                    ->select('coupon_master.*')
+	                    ->count();
+
+	            if($intCouponMaster > 0)        
+	           		$item->offers = true;        
+    			else
+    				$item->offers = false;
+
     			$objCartItems[$value['item_id']] = $item;
+    		}
     		else
     			unset($arrCartItems[$key]);
     	}
 
+    	//shipping charges and vat
     	$shipping_charges = 0;
     	$vat = 0;
+
     	$total_price = $cart_total_price + $shipping_charges + $vat;
 
     	return view('user.cart',compact('total_price','shipping_charges','vat','objCartItems','arrCartItems','cart_total_price','cart_total_items'));
@@ -82,6 +100,13 @@ class CartController extends Controller
     		//check if given qty is valid
     		$objItem = App\ItemMaster::where('item_id',$item_id)->where('status',1)->first();
 
+    		if(null == $objItem)
+    		{
+    			$return['error'] = true;
+    			$return['message'] = 'Invalid request.';
+    			return json_encode($return);
+    		}
+
     		if($objItem->qty==null)
                     $show_size_chart=true;
 
@@ -109,6 +134,7 @@ class CartController extends Controller
                     $total_available_qty = $objItem->qty;
             }    
 
+            //change quantity if every condition is satisfying
     		if($qty != '' && is_numeric($qty) && $qty <= $total_available_qty)
             {
 	    		if($this->user_session->is_logged_in)
@@ -125,10 +151,17 @@ class CartController extends Controller
 	    			$objCartItem = App\CartMaster::where('session_id',session_id())->where('item_id',(int)$item_id)->first();
 	    		}
 
-	    		$objCartItem->qty = $qty;
-	    		$objCartItem->save();
-
-	    		$return['error'] = false;
+	    		if(null != $objCartItem)
+	    		{
+		    		$objCartItem->qty = $qty;
+		    		$objCartItem->save();
+	    			$return['error'] = false;
+	    		}
+	    		else
+	    		{
+	    			$return['error'] = true;
+    				$return['message'] = 'Invalid request.';		
+	    		}		
     		}
     		else
     		{
@@ -144,5 +177,34 @@ class CartController extends Controller
     	}
 
     	return json_encode($return);
+    }
+
+    public function apply_coupon(Request $request,$item_id='')
+    {
+    	$coupon_code = trim($request->input('coupon_code',''));
+
+    	if($item_id != '' && $coupon_code != '')
+    	{
+    		$objItem = App\ItemMaster::where('item_id',$item_id)->where('status',1)->first;
+
+    		if(null != $objItem)
+    		{
+	    		//get coupon information if any
+	            $objCouponMaster = DB::table('coupon_master')
+	                    ->join('coupon_type_master','coupon_type_master.coupon_id','=','coupon_master.coupon_id')
+	                    ->where('coupon_master.status', 1)
+	                    ->where('coupon_type_master.type_id', $objItem->item_type)
+	                    ->select('coupon_master.*')
+	                    ->get();
+            }
+            else
+            {
+
+            }
+    	}
+    	else
+    	{
+    		return redirect('cart');
+    	}
     }
 }

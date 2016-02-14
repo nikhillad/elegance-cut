@@ -31,6 +31,16 @@ class ItemController extends Controller
 
 		    	$arrType_id_obj = getKeyValueArray('type_id','name',$objType,'object',true);
 
+
+                //get coupon information if any
+                $objCouponMaster = DB::table('coupon_master')
+                        ->join('coupon_type_master','coupon_type_master.coupon_id','=','coupon_master.coupon_id')
+                        ->where('coupon_master.status', 1)
+                        ->where('coupon_type_master.type_id', $objItem->item_type)
+                        ->select('coupon_master.*')
+                        ->get();
+
+                        
                 $size = null;
                 $message = '';
                 $show_size_chart = false;
@@ -63,6 +73,8 @@ class ItemController extends Controller
                         $total_available_qty = $objItem->qty;
                 }
 
+
+                //add to cart
                 if ($request->isMethod('post')) 
                 {
                     //check size is valid
@@ -108,7 +120,7 @@ class ItemController extends Controller
                             {
                                 //add to cart
                                 DB::connection('mongodb')->table('cart')->insert(
-                                    ['item_id' => (int)$objItem->item_id, 'user_id' => (int)$user_id, 'session_id' => session_id(), 'qty'=> (int)$qty, 'size' => $size, 'price' => $objItem->price]
+                                    ['item_id' => (int)$objItem->item_id, 'user_id' => (int)$user_id, 'session_id' => session_id(), 'qty'=> (int)$qty, 'size' => $size, 'price' => $objItem->price, 'coupon_added'=>0]
                                 );
 
                                 return redirect()->route('cart');
@@ -140,7 +152,7 @@ class ItemController extends Controller
                     $message = $temp;
                 }
 
-    			return view('product.product',compact('total_available_qty','message','show_size_chart','objSizes','objProductImages','objItem','objCategory','objType','arrCetegory_id_obj','arrType_id_obj'));
+    			return view('product.product',compact('objCouponMaster','total_available_qty','message','show_size_chart','objSizes','objProductImages','objItem','objCategory','objType','arrCetegory_id_obj','arrType_id_obj'));
     		}
     		else
     		{

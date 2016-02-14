@@ -63,9 +63,9 @@ function login($objUser,$remember_me = false)
 	$cookie_name = 'elegance_cut_user';
 
 	if($remember_me)
-		$cookie_value = $objUser->fname.'-'.$objUser->user_id.'-'.$objUser->email.'-remember';
+		$cookie_value = $objUser->fname.'-'.$objUser->user_id.'-'.$objUser->email.'-'.env('APP_ID').'-remember';
 	else
-		$cookie_value = $objUser->fname.'-'.$objUser->user_id.'-'.$objUser->email;
+		$cookie_value = $objUser->fname.'-'.$objUser->user_id.'-'.$objUser->email.'-'.env('APP_ID').'-no_remember';
 
 	if($remember_me)
 	{
@@ -88,6 +88,29 @@ function logout()
 function validate_session()
 {
 	$user = new stdClass();
+
+	//check if user has any stored cookie and check for its version if yes
+	//logout user if stored cookie is outdated
+	if(isset($_COOKIE['elegance_cut_user']))
+	{
+		$arrayCookieVariables = getCookieVariables(decryptCookie($_COOKIE['elegance_cut_user']));
+		if(count($arrayCookieVariables) == env('COOKIE_LENGTH') && $arrayCookieVariables[3] == env('APP_ID'))
+		{
+			//do nothing
+		}
+		else
+		{
+			logout();
+			$user->is_logged_in = false;
+			return $user;
+		}
+	}
+	else
+	{
+		logout();
+		$user->is_logged_in = false;
+		return $user;
+	}
 
 	//check if all the session variable are in place
 	if(isset($_SESSION['elegance_cut_user']) && isset($_SESSION['elegance_cut_user']['obj']))
@@ -135,6 +158,13 @@ function validate_session()
 			$objUser = App\UserMaster::where('user_id',$arrayCookieVariables[1])
 						->where('status',1)
 						->first();
+
+			if(null == $objUser)
+			{
+				logout();
+				$user->is_logged_in = false;
+				return $user;
+			}
 
 			if(in_array('remember', $arrayCookieVariables))
 			{

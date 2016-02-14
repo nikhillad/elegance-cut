@@ -66,7 +66,11 @@ Elegance Cut
               <h5 style="padding-left:10px;margin-top:-5px">{{$arrType_id_obj[$objItem->item_type]->name}}</h5>
 
               <div class="price-box" style="padding-left:10px">
-                <h4 class="product-price"><i class="fa fa-inr"></i> {{$objItem->price}}</h4>
+                <h4 class="product-price"><i class="fa fa-inr"></i> {{$objItem->price}}
+                @if (!empty($objCouponMaster))
+                  <span style="font-size:15px;color:grey">(Discount offers available. Scroll down to see all the available offers)</span>
+                @endif
+                </h4>
               </div>
               
               <!-- Accordion -->
@@ -198,11 +202,22 @@ Elegance Cut
                     <!-- /Input Group -->
                   </div>
                   <!-- /Form Group -->
-
-   
                 </div>
                 <!-- /Col -->
+
                 
+                <!-- show offers details here -->
+                @if (!empty($objCouponMaster))
+                <div class="col-sm-12">
+                 <div class="alert alert-info">
+                    @foreach($objCouponMaster as $coupon)
+                      - Additional <strong>{{round($coupon->discount_percent)}}%</strong> discount available. Use coupon code <strong>{{$coupon->coupon_code}}</strong> on Cart page.<br>
+                    @endforeach
+                 </div> 
+                </div> 
+                @endif
+                
+
               </div>
               <!-- /Row -->
               {{csrf_field()}}

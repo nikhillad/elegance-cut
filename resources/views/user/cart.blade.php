@@ -42,18 +42,36 @@ Elegance Cut
                   <td class="image hidden-xs"><img src="data:image/jpeg;base64,{{base64_encode(thumbnailImage(DOCUMENT_ROOT.'images/products/'.strtoupper($objCartItems[$item['item_id']]->item_image[0]).'/'.$objCartItems[$item['item_id']]->item_image))}}" alt="product"/></td>
                   <td class="details">
                     <div class="clearfix">
+                      
                       <div class="pull-left no-float-xs">
                         <a href="#" class="title">{{$objCartItems[$item['item_id']]->name}}</a>
                         @if ($item['size'] != null)
                           <span>Size : {{$item['size']}}</span>
                         @endif
                       </div>
-                      <div class="action pull-right no-float-xs">
-                        <div class="clearfix">
-                          <a href="{{route('remove_cart_item',['item_id'=>$item['item_id']])}}"><button class="delete"><i class="fa fa-trash-o"></i></button></a> 
-                        </div>
+                      
+                      <div class="pull-right no-float-xs">
+                        
+                          <a href="{{route('remove_cart_item',['item_id'=>$item['item_id']])}}"><button class="btn btn-primary delete"><i class="fa fa-trash-o"></i></button></a> 
+                        
                       </div>
+
                     </div>
+
+                    <!-- apply coupon code section -->
+                    @if ($objCartItems[$item['item_id']]->offers == true && $item['coupon_added'] == 0)
+                    <div class="pull-right">
+                      <form method="post" action="{{route('apply_coupon',['item_id'=>$item['item_id']])}}" class="form-inline">
+                        <input type="text" class="form-control" name="coupon_code" id="coupon_code" placeholder="Enter coupon code here">
+                        {{csrf_field()}}
+                        <button class="btn btn-primary" type="submit">Apply</button>
+                      </form>
+                    </div>
+                    @elseif ($objCartItems[$item['item_id']]->offers == true && $item['coupon_added'] == 1)
+                      <span class="red-text pull-right">Coupon has been applied!</span>
+                    @endif
+
+
                   </td>
                   <td class="qty">
                       <input type="text" onchange="update_qty({{$item['item_id']}})" value="{{$item['qty']}}" id="qty-{{$item['item_id']}}" name="qty-{{$item['item_id']}}">

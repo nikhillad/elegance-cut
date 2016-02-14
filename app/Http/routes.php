@@ -36,6 +36,8 @@ Route::group(['middleware' => ['web']], function () {
 
 	Route::post('cart/change-qty', ['as' => 'change_qty', 'uses' => 'CartController@change_qty']);
 
+	Route::post('cart/apply-coupon/{item_id}', ['as' => 'apply_coupon', 'uses' => 'CartController@apply_coupon']);
+
 	Route::get('my-account', ['as' => 'account', 'uses' => 'UserController@account']);
 
 	Route::get('my-orders', ['as' => 'orders', 'uses' => 'UserController@orders']);

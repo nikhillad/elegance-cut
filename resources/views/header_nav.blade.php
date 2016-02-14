@@ -78,7 +78,11 @@
           
           <!--   <a aria-expanded="false" class="btn btn-outline"><b class="count count-scolor count-round">2</b><i class="fa fa-shopping-cart" style="font-size:28px"></i> My Cart</a> -->
             <a href="{{route('cart')}}">
-            <button class="btn blue-button"><b class="count count-scolor count-round">2</b><i class="fa fa-shopping-cart" style="font-size:23px"></i><span class="cart-button-title hidden-xs">My Cart</span></button>
+              <button class="btn blue-button">
+              @if ($count_cart > 0)
+              <b class="count count-scolor count-round">{{$count_cart}}</b>
+              @endif
+              <i class="fa fa-shopping-cart" style="font-size:23px"></i><span class="cart-button-title hidden-xs">My Cart</span></button>
             </a>
 
 

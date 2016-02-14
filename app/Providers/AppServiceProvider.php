@@ -17,6 +17,8 @@ class AppServiceProvider extends ServiceProvider
     {
         view()->composer(['main','main_wo_header_nav','category_items'], function($view)
         {
+            $this->user_session = validate_session();
+
             //fetch all the categories
             $arrCategory = DB::table('category_master')->get();
 
@@ -36,7 +38,20 @@ class AppServiceProvider extends ServiceProvider
 
             $arrType_id_name = getKeyValueArray('type_id','name',$arrType,'object');
             
-            $view->with(compact('arrTypeCategoryWise','arrCategory','arrType','arrCetegory_id_name','arrType_id_name'));
+            //get cart items count
+            if($this->user_session->is_logged_in)
+                $user_id = $this->user_session->user_id;
+            else
+                $user_id = null;
+
+            //get cart details
+            if($this->user_session->is_logged_in)
+                $count_cart = DB::connection('mongodb')->collection('cart')->where('user_id',$user_id)->orWhere('session_id',session_id())->count();
+            else
+                $count_cart = DB::connection('mongodb')->collection('cart')->where('session_id',session_id())->count();
+            
+
+            $view->with(compact('count_cart','arrTypeCategoryWise','arrCategory','arrType','arrCetegory_id_name','arrType_id_name'));
         });
     }
 
