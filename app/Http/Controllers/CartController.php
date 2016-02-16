@@ -33,7 +33,7 @@ class CartController extends Controller
     		$cart_total_price = $cart_total_price + ($value['price']*$value['qty']);
     		$cart_total_items++;
 
-    		$item = App\ItemMaster::where('item_id',$value['item_id'])->where('status',1)->first;
+    		$item = App\ItemMaster::where('item_id',$value['item_id'])->where('status',1)->first();
 
     		if(null != $item)
     		{
@@ -185,25 +185,82 @@ class CartController extends Controller
 
     	if($item_id != '' && $coupon_code != '')
     	{
-    		$objItem = App\ItemMaster::where('item_id',$item_id)->where('status',1)->first;
+    		//find item in db
+    		$objItem = App\ItemMaster::where('item_id',$item_id)->where('status',1)->first();
 
-    		if(null != $objItem)
+    		//find item in mongo cart
+    		if($this->user_session->is_logged_in)
     		{
+    			$objCartItem = App\CartMaster::where( function ( $query )
+						    {
+						        $query->where('user_id',(int)$this->user_session->user_id)
+						            ->orWhere('session_id',session_id());
+						    })
+							->where('item_id',(int)$item_id)->first();
+    		}
+    		else
+    		{
+    			$objCartItem = App\CartMaster::where('session_id',session_id())->where('item_id',(int)$item_id)->first();
+    		}
+
+    		//if item found both in database and cart
+    		if(null != $objItem && null != $objCartItem)
+    		{
+    			//check if item is still eligible for coupon addition
+    			if($objCartItem->coupon_added == 1)
+    			{
+    				$_SESSION['elegance_cut']['error'] = 'Coupon has already activated for this item.';
+            		return redirect('cart');
+    			}
+
 	    		//get coupon information if any
 	            $objCouponMaster = DB::table('coupon_master')
 	                    ->join('coupon_type_master','coupon_type_master.coupon_id','=','coupon_master.coupon_id')
 	                    ->where('coupon_master.status', 1)
 	                    ->where('coupon_type_master.type_id', $objItem->item_type)
+	                    ->where('coupon_master.coupon_code', $coupon_code)
 	                    ->select('coupon_master.*')
-	                    ->get();
+	                    ->first();
+
+	            if($objCouponMaster != null)
+	            {
+	            	//everything is fine, add the coupon
+	            	$coupon_discount_rate = $objCouponMaster->discount_percent;
+	            	$discount_price = ($coupon_discount_rate/100)*$objCartItem->price;
+
+	            	$objCartItem->price = $objCartItem->price - $discount_price;
+	            	
+	            	try{
+	            		$objCartItem->save();
+	            	}
+	            	catch(Exception $e)
+	            	{
+	            		$_SESSION['elegance_cut']['error'] = 'We are sorry, could not add the coupon. Please try again or contact our customer service.';
+            			return redirect('cart');
+	            	}	
+
+	            	$objCartItem->coupon_added = 1;
+	            	$objCartItem->save();
+
+	            	$_SESSION['elegance_cut']['success'] = 'The coupon has been successfully added.';
+            		return redirect('cart');
+
+	            }   
+	            else
+	            {
+	            	$_SESSION['elegance_cut']['error'] = 'The coupon code, you have entered is invalid.';
+            		return redirect('cart');
+	            }     
             }
             else
             {
-
+            	$_SESSION['elegance_cut']['error'] = 'Sorry, This item is no longer available. You can remove it from your cart.';
+            	return redirect('cart');
             }
     	}
     	else
     	{
+    		$_SESSION['elegance_cut']['error'] = 'Please enter coupon code.';
     		return redirect('cart');
     	}
     }

@@ -21,6 +21,20 @@ Elegance Cut
           </div>
           <div class="clearfix"></div>
           
+          @if (isset($_SESSION['elegance_cut']['error']) && $_SESSION['elegance_cut']['error'] != '')
+          <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{$_SESSION['elegance_cut']['error']}}
+          </div>
+          @endif
+
+          @if (isset($_SESSION['elegance_cut']['success']) && $_SESSION['elegance_cut']['success'] != '')
+          <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{$_SESSION['elegance_cut']['success']}}
+          </div>
+          @endif
+
           <div class="message-div"></div>
           <!-- Cart -->
           <div class="cart">
@@ -149,6 +163,10 @@ Elegance Cut
       </section>
       <!-- /Content Block
       ============================================-->
+      <!-- remove error and success from session -->
+      {{$_SESSION['elegance_cut']['error'] = null}}
+      {{$_SESSION['elegance_cut']['success'] = null}}
+
 @section('script')    
     <script type="text/javascript">
       if({{ (isset($message) && $message != '') ? 1 : 0 }})
