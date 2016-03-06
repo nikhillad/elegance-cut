@@ -20,7 +20,7 @@ Elegance Cut
             
               <!-- Slide -->
               <div class="slide">
-                <img class="img-main" src="images/slides/slide1.jpg" alt=""/><!-- slider image + background -->
+                <img style="" class="img-main" src="{{asset('images/slides/1.jpg')}}" alt=""/><!-- slider image + background -->
                 <!-- Text -->
                 <div class="text">
                   <div class="vcenter">
@@ -38,7 +38,7 @@ Elegance Cut
               
               <!-- Slide -->
               <div class="slide">
-                <img class="img-main" src="images/slides/slide2.jpg" alt=""/><!-- slider image + background -->
+                <img class="img-main" src="{{asset('images/slides/3.jpg')}}" alt=""/><!-- slider image + background -->
                 <!-- Text -->
                 <div class="text">
                   <div class="vcenter">
@@ -53,24 +53,7 @@ Elegance Cut
                 <!-- /Text -->
               </div>
               <!-- /Slide -->
-              
-              <!-- Slide -->
-              <div class="slide">
-                <img class="img-main" src="images/slides/slide3.jpg" alt=""/><!-- slider image + background -->
-                <!-- Text -->
-                <div class="text">
-                  <div class="vcenter">
-                    <div class="vcenter-this text-block">
-                      <h5 class="bx-layer" data-anim="bounceInLeft" data-dur="1000" data-delay="700">from 5th March - 26 March</h5>
-                      <h1 class="bx-layer" data-anim="bounceInDown" data-dur="1000" data-delay="100">hot summer collection</h1><br/>
-                      <p class="bx-layer" data-anim="bounceInRight" data-dur="1000" data-delay="500">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet consectetur veli..</p>
-                      <a class="btn btn-primary bx-layer" data-anim="bounceInUp" data-dur="1000" data-delay="1000">shop now</a>
-                    </div>
-                  </div>
-                </div>
-                <!-- /Text -->
-              </div>
-              <!-- /Slide -->
+
             
             </div>
             <!-- /BxSlider -->

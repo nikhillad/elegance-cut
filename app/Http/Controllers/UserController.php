@@ -460,7 +460,7 @@ class UserController extends Controller
 		if(!$this->user_session->is_logged_in)
 			return redirect()->route('login');
 
-		return view('orders');
+		return view('user.orders');
 	}
 
 

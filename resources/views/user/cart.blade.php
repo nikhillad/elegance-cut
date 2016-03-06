@@ -198,20 +198,23 @@ Elegance Cut
                       $('#qty-old-'+item_id).attr('value',qty);
                      
                       var new_total = price*qty;
-
+                      console.log(new_total);
+                      console.log(old_total);
                       var diff = new_total-old_total;
-                      
-                      //change total
+                       console.log(diff);
+                       console.log(old_subtotal);                     
+
+                       //change total
                       $('#total-'+item_id).html('<span class="currency"></span><i class="fa fa-inr"></i> '+new_total);
                       
                       //change subtotal  
-                      $('#subtotal').html('<span class="currency"></span><i class="fa fa-inr"></i> '+(parseInt(old_subtotal)+parseInt(diff)));
+                      $('#subtotal').html('<span class="currency"></span><i class="fa fa-inr"></i> '+(parseFloat(old_subtotal,10)+parseFloat(diff,10)));
 
                       //change grandtotal
-                      $('#grandtotal').html('<span class="currency"></span><i class="fa fa-inr"></i> '+(parseInt(old_grandtotal)+parseInt(diff)));
+                      $('#grandtotal').html('<span class="currency"></span><i class="fa fa-inr"></i> '+(parseFloat(old_grandtotal)+parseFloat(diff)));
 
-                      $('#grandtotal-hidden').attr('value',(parseInt(old_grandtotal)+parseInt(diff)));
-                      $('#subtotal-hidden').attr('value',(parseInt(old_subtotal)+parseInt(diff)));
+                      $('#grandtotal-hidden').attr('value',(parseFloat(old_grandtotal)+parseFloat(diff)));
+                      $('#subtotal-hidden').attr('value',(parseFloat(old_subtotal)+parseFloat(diff)));
                       $('#total-hidden-'+item_id).attr('value',new_total);
 
                   }

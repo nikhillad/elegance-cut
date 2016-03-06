@@ -148,5 +148,29 @@
       .red-text{
         color: #E7214C;
       }
+      .intro-slider .bx-viewport{
+        height: 500px !important;
+      }
+      .intro-slider .slide .text{
+        height: 70% !important;
+      } 
+      .zero-border-table td{
+        border-top: 0px !important;
+      }
+      .top-right-span
+      {
+        float: right;
+        margin-top: -10px;
+        margin-right: -10px;
+        padding: 3px;
+        background-color: #007FB8;
+        color: #FFFFFF;
+        border-radius: 0px 0px 0px 7px;
+      }
+      .order-box{
+        background-color:white;
+        padding:10px;
+        border:1px solid #007FB8;
+      }
     </style>
   </head>
