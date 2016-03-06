@@ -28,6 +28,10 @@ Route::group(['middleware' => ['web']], function () {
 
 	Route::get('/', ['as' => 'home', 'uses' => 'IndexController@index']);
 
+	Route::match(['get', 'post'], 'login', ['as' => 'login', 'uses' => 'UserController@login']);
+
+	Route::get('logout', ['as' => 'logout', 'uses' => 'UserController@logout']);
+
 	Route::match(['get', 'post'], 'sign-up', ['as' => 'register', 'uses' => 'UserController@register']);
 
 	Route::get('cart', ['as' => 'cart', 'uses' => 'CartController@index']);
@@ -44,10 +48,6 @@ Route::group(['middleware' => ['web']], function () {
 
 	Route::match(['get', 'post'], 'about-us', ['as' => 'about_us', 'uses' => 'IndexController@about_us']);
 
-	Route::match(['get', 'post'], 'login', ['as' => 'login', 'uses' => 'UserController@login']);
-
-	Route::get('logout', ['as' => 'logout', 'uses' => 'UserController@logout']);
-
     Route::match(['get', 'post'], 'about-us', ['as' => 'about_us', 'uses' => 'IndexController@about_us']);
 
     Route::match(['get', 'post'], '/my-account/deactivate', ['as' => 'deactivate_account', 'uses' => 'UserController@deactivate_account']);
@@ -63,5 +63,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::match(['get','post'],'product/{item_code}', ['as' => 'product', 'uses' => 'ItemController@index']);
 
     Route::get('product/add-to-cart', ['as' => 'add_to_cart', 'uses' => 'ItemController@add_to_cart']);
+
+    Route::match(['get','post'], 'checkout', ['as' => 'checkout', 'uses' => 'CartController@checkout']);
 
 });

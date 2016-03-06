@@ -142,7 +142,7 @@ Elegance Cut
 
           <!-- Cart Buttons -->
           <div class="cart-buttons clearfix"> 
-            <a class="btn btn-base checkout" href="#"><i class="icon-left fa fa-shopping-cart"></i>checkout</a>
+            <a class="btn btn-base checkout" href="{{route('checkout')}}"><i class="icon-left fa fa-shopping-cart"></i>checkout</a>
             <a class="btn btn-primary checkout" href="{{route('home')}}"><i class="icon-left fa fa-arrow-left"></i>continue shopping</a>
           </div>
           <!-- /Cart Buttons -->

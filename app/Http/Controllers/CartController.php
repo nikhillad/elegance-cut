@@ -264,4 +264,154 @@ class CartController extends Controller
     		return redirect('cart');
     	}
     }
+
+    public function checkout(Request $request)
+    {
+    	if($this->user_session->is_logged_in)
+    		$user_id = $this->user_session->user_id;
+    	else
+    		$user_id = null;
+
+    	$objUser = $this->user_session;
+
+    	//get cart details
+    	if($this->user_session->is_logged_in)
+    		$arrCartItems = DB::connection('mongodb')->collection('cart')->where('user_id',$user_id)->orWhere('session_id',session_id())->get();
+    	else
+    		$arrCartItems = DB::connection('mongodb')->collection('cart')->where('session_id',session_id())->get();
+    	
+    	//get states and countries from database
+    	$arrStates = DB::connection('mongodb')->collection('states')->get();
+		$arrCountries = DB::connection('mongodb')->collection('countries')->get();	
+
+		$arrStates_code_state = getKeyValueArray('code','state',$arrStates);
+		$arrCountries_code_country = getKeyValueArray('code','country',$arrCountries);
+
+		$form['fname'] 			= filter_form_input($request->input('fname',''));
+		$form['lname'] 			= filter_form_input($request->input('lname',''));
+    	$form['email'] 			= filter_form_input($request->input('email',''));
+    	$form['mobile'] 		= filter_form_input($request->input('mobile',''));
+    	$form['zip'] 			= filter_form_input($request->input('zip',''));
+    	$form['address'] 		= filter_form_input($request->input('address1','').' '.$request->input('address2',''));
+    	$form['city'] 			= filter_form_input($request->input('city',''));
+    	$form['state'] 			= filter_form_input($request->input('state',''));
+    	$form['country'] 		= filter_form_input($request->input('country',''));
+
+    	$message = '';
+    	$open_tab = '';
+
+    	if ($request->isMethod('post')) 
+    	{
+
+	    	if($form['fname'] != '' && $form['lname'] != '' && $form['email'] != '' 
+	    		&& $form['email'] != '' && $form['mobile'] != '' && $form['zip'] != ''
+	    		&& $form['address'] != '' && $form['city'] != ''
+	    		)
+	    	{
+	    		if (!filter_var($form['email'], FILTER_VALIDATE_EMAIL))
+	    		{
+	    			$message[] = '-Please enter a valid email address.';
+	    		}
+		    		
+		    	if(strlen($form['mobile']) > 10 || strlen($form['mobile']) < 10)	
+			    {
+			    	$message[] = '-Please enter valid 10 digit mobile number.';		
+			    }
+			    if(!is_numeric($form['mobile']))
+		    	{
+		    		$message[] = '-Please enter valid 10 digit mobile number.';		
+		    	}
+			    if($form['state'] == 'select' || $form['country'] == 'select' || !array_key_exists($form['state'], $arrStates_code_state)
+    			||  !array_key_exists($form['country'], $arrCountries_code_country))
+    			{
+    				$message[] = '-Please select your state and country.';
+    			}
+			    
+			    if(empty($message))
+			    {
+			    	try{
+				    	//save user in database
+				    	$objUserMaster = new App\UserMaster();
+
+				    	$objUserMaster->fname 	 = $form['fname'];
+				    	$objUserMaster->lname 	 = $form['lname'];
+				    	$objUserMaster->email 	 = $form['email'];
+				    	$objUserMaster->mobile 	 = $form['mobile'];
+				    	$objUserMaster->zip_code = $form['zip'];
+				    	$objUserMaster->state 	 = $form['state'];
+				    	$objUserMaster->country  = $form['country'];
+				    	$objUserMaster->city 	 = $form['city'];
+				    	$objUserMaster->address  = $form['address'];
+				    	$objUserMaster->password = md5(time());
+
+			    		$res = $objUserMaster->save();
+
+			    		$LastInsertId = $objUserMaster->user_id;
+			    	}
+			    	catch(\Exception $e)
+			    	{
+			    		$message[] = 'Looks like something went wrong or mostly the email you entered, already exists. Kindly register with different email id or contact our support at <a class="yellow-link" href="mailto:'.config('global.support_email').'">'.config('global.support_email').'</a>';
+			    		$open_tab = 'shippingAddressLink';
+			    	}
+
+			    	if(isset($res) && $res == true && empty($message))
+			    	{
+			    		$objUser = $objUserMaster;
+			    		$user_id = $objUser->user_id;
+			    	}
+			    	else if(empty($message))
+			    	{
+			    		$message[] = 'Something went wrong. Please try again.';
+			    		$open_tab = 'shippingAddressLink';
+			    	}
+			    }		
+			    			
+	    	}
+	    	else
+	    	{
+	    		$message[] = '-Please fill in all the fields.';
+	    		$open_tab = 'shippingAddressLink';
+	    	}
+    	}
+
+    	if($user_id != null)
+    	{
+	    	//set userid as current user in all the cart items for current session
+	    	foreach ($arrCartItems as $key => $item) {
+	    		$objCartItem = App\CartMaster::where('item_id',$item['item_id'])->first();
+
+	    		$objCartItem->user_id = $user_id;
+	    		$objCartItem->save();
+	    	}
+
+	    }
+
+	    if(is_array($message))
+    	{
+    		$temp = '';
+
+    		foreach($message as $value)
+    		{
+    			$temp = $temp.$value.'<br>';
+    		}
+
+    		$message = $temp;
+    	}
+
+    	$cart_total_price = 0;
+    	$cart_total_items = 0;
+
+    	foreach ($arrCartItems as $key => $value) {
+    		$cart_total_price = $cart_total_price + ($value['price']*$value['qty']);
+    		$cart_total_items++;
+    	}
+
+    	//shipping charges and vat
+    	$shipping_charges = 0;
+    	$vat = 0;
+
+    	$total_price = $cart_total_price + $shipping_charges + $vat;
+
+    	return view('user.checkout',compact('total_price','vat','shipping_charges','cart_total_items','cart_total_price','open_tab','form','arrCountries','arrStates','message','user_id','objUser','arrStates_code_state','arrCountries_code_country'));
+    }
 }

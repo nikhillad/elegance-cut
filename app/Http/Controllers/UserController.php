@@ -29,12 +29,23 @@ class UserController extends Controller
 	 */    
 	public function login(Request $request)
 	{
-
 		if($this->user_session->is_logged_in)
 			return redirect()->route('home');
+		
+		//check if any callback has been provided
+		if(isset($_GET['callback_url']) && trim($_GET['callback_url']) != '')
+		{
+			$callback = $_GET['callback_url'];
+
+			if(!isset($_SESSION['elegance_cut']['callback']))
+				$_SESSION['elegance_cut']['callback'] = $callback;
+		}
+
+		$callback = (null !== $_SESSION['elegance_cut']['callback']) ? $_SESSION['elegance_cut']['callback'] : '';
+
 
 		if ($request->isMethod('post')) {
-		 
+		
 			if(!$request->has('email') || !$request->has('password'))
 	    	{
 	    		$message = 'Invalid username or password.';
@@ -60,7 +71,15 @@ class UserController extends Controller
 	    	else
 	    		login($objUser);
 
-			return redirect()->route('home');
+	    	if(isset($callback) && $callback != '')
+	    	{
+				$_SESSION['elegance_cut']['callback'] = null;
+				return redirect()->route($callback);
+	    	}
+			else
+			{
+				return redirect()->route('home');
+			}
 		}
 
 		return view('user.login');
@@ -86,6 +105,18 @@ class UserController extends Controller
 	{
 		if($this->user_session->is_logged_in)
 			return redirect()->route('home');
+
+		//check if any callback has been provided
+		if(isset($_GET['callback_url']) && trim($_GET['callback_url']) != '')
+		{
+			$callback = $_GET['callback_url'];
+
+			if(!isset($_SESSION['elegance_cut']['callback']))
+				$_SESSION['elegance_cut']['callback'] = $callback;
+		}
+
+		$callback = (null !== $_SESSION['elegance_cut']['callback']) ? $_SESSION['elegance_cut']['callback'] : '';
+
 
 		$arrStates = DB::connection('mongodb')->collection('states')->get();
 		$arrCountries = DB::connection('mongodb')->collection('countries')->get();
@@ -176,7 +207,15 @@ class UserController extends Controller
 			    		//send user an email verification link
 			    		generate_and_send_email_verification_email($objUserMaster);
 
-			    		return redirect()->route('home');
+			    		if(isset($callback) && $callback != '')
+				    	{
+							$_SESSION['elegance_cut']['callback'] = null;
+							return redirect()->route($callback);
+				    	}
+						else
+						{
+							return redirect()->route('home');
+						}
 			    	}
 			    	else if(empty($message))
 			    	{
