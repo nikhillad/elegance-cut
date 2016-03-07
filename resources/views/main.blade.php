@@ -195,8 +195,8 @@
                 <div class="col-xs-12 col-sm-3 col-md-3">
                   <h5>CUSTOMER SERVICE</h5>
                     <ul class="vlinks">
-                      <li><a href="#">Shipping & Delivery</a></li>
-                      <li><a href="#">Returns & Exchange</a></li>
+                      <li><a href="shipping_policy.pdf" target="blank">Shipping & Delivery</a></li>
+                      <li><a href="return_policy.pdf" target="blank">Returns & Exchange</a></li>
                       <li><a href="#">FAQ</a></li>
                       <li><a href="{{route('orders')}}">Track Order</a></li>
                       <li><a href="#">Call Us: +91 9999999999</a></li>
@@ -220,8 +220,8 @@
                 <div class="col-xs-12 col-sm-3 col-md-3">
                   <h5>POLICIES</h5>
                   <ul class="vlinks">
-                    <li><a href="#">Privacy Policies</a></li>
-                    <li><a href="#">Terms & Conditions</a></li>
+                    <li><a href="privacy_policy.pdf" target="blank">Privacy Policies</a></li>
+                    <li><a href="tnc.pdf" target="blank">Terms & Conditions</a></li>
                   </ul>
                 </div>
                 <!-- /Col -->

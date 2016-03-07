@@ -41,7 +41,7 @@ class UserController extends Controller
 				$_SESSION['elegance_cut']['callback'] = $callback;
 		}
 
-		$callback = (null !== $_SESSION['elegance_cut']['callback']) ? $_SESSION['elegance_cut']['callback'] : '';
+		$callback = (isset($_SESSION['elegance_cut']['callback'])) ? $_SESSION['elegance_cut']['callback'] : '';
 
 
 		if ($request->isMethod('post')) {
@@ -115,7 +115,7 @@ class UserController extends Controller
 				$_SESSION['elegance_cut']['callback'] = $callback;
 		}
 
-		$callback = (null !== $_SESSION['elegance_cut']['callback']) ? $_SESSION['elegance_cut']['callback'] : '';
+		$callback = (isset($_SESSION['elegance_cut']['callback'])) ? $_SESSION['elegance_cut']['callback'] : '';
 
 
 		$arrStates = DB::connection('mongodb')->collection('states')->get();

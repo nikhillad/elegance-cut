@@ -148,9 +148,7 @@
       .red-text{
         color: #E7214C;
       }
-      .intro-slider .bx-viewport{
-        height: 500px !important;
-      }
+        
       .intro-slider .slide .text{
         height: 70% !important;
       } 
@@ -171,6 +169,28 @@
         background-color:white;
         padding:10px;
         border:1px solid #007FB8;
+      }
+      .text-icon-box i{
+        font-size: 35px;
+        position: absolute;
+        margin-top: -6px;
+      }
+      .text-icon-box span{
+        margin-left: 40px;
+      }
+
+      /* Small devices (tablets, 768px and up) */
+      @media (min-width: 300px) {
+        .intro-slider .bx-viewport{
+          height: 150px !important;
+        }
+      }
+
+      /* Medium devices (desktops, 992px and up) */
+      @media (min-width: 700px) {
+        .intro-slider .bx-viewport{
+          height: 500px !important;
+        }
       }
     </style>
   </head>

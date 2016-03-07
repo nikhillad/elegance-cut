@@ -191,7 +191,7 @@ Elegance Cut
                     <div class="panel-body">
                       <div class="row">
                           @if($user_id != null)
-                          <div class="col-xs-6">
+                          <div class="col-sm-6 col-xs-12">
                             <address>
                               <strong>Shipping Address :</strong><br>
                               {{$objUser->fname}} {{$objUser->lname}}<br>
@@ -201,7 +201,7 @@ Elegance Cut
                               <abbr title="Phone">P:</abbr> {{$objUser->mobile}}
                             </address>
                           </div>
-                          <div class="col-xs-6">
+                          <div class="col-sm-6 col-xs-12">
                             <address>
                               <strong>Billing Address :</strong><br>
                               {{$objUser->fname}} {{$objUser->lname}}<br>
